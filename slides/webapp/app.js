@@ -77,13 +77,15 @@ const labData = {
 
 	'Module B|Hands-on A+B': {
 		title: 'Lab A + B: Workflow Design & Project Audit',
-		objective: 'Lab A: Design a reusable 5-step AI workflow. Lab B: Audit a real project and produce a ranked action plan with day-1 quick wins.',
+		objective: 'Lab A: Design a reusable 5-step AI workflow. Lab B: Audit a real project and produce a ranked action plan with day-1 quick wins. Run entirely in REPL — one session, conversational follow-ups.',
 		commands: [
-			{ label: 'Lab A — Generate workflow draft', code: 'gemini -p "You are a workflow coach. Design a 5-step AI-assisted workflow for weekly report writing. For each step include goal, input, output, quality check, risk, fallback. Output as markdown table." > deliverables/TEAM_ALPHA/workflow-basics.md' },
-			{ label: 'Lab A — Improve for beginners', code: 'gemini -p "Revise @deliverables/TEAM_ALPHA/workflow-basics.md for beginners. Make each step executable in under 10 minutes." > deliverables/TEAM_ALPHA/workflow-basics-v2.md' },
-			{ label: 'Lab B — Audit project + risks', code: 'gemini -p "Analyze @docs/course-outline.md and @docs/lab-guide.md. Return architecture/structure summary and top risks for workshop delivery." > deliverables/TEAM_ALPHA/audit-summary.md' },
-			{ label: 'Lab B — Ranked action plan', code: 'gemini -p "Using @deliverables/TEAM_ALPHA/audit-summary.md, provide top 5 improvements ranked by impact and effort in markdown table." > deliverables/TEAM_ALPHA/action-plan.md' },
-			{ label: 'Lab B — Day-1 quick wins', code: 'gemini -p "From @deliverables/TEAM_ALPHA/action-plan.md, list 3 quick wins that can be done today with exact owner and expected result." > deliverables/TEAM_ALPHA/quick-wins.md' },
+			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
+			{ label: 'Lab A — Prompt 1: Generate workflow draft', code: 'You are a workflow coach. Design a 5-step AI-assisted workflow for weekly report writing. For each step include: goal, input, output, quality check, risk, fallback. Output as a markdown table.' },
+			{ label: 'Lab A — Prompt 2: Improve for beginners (follow-up)', code: 'Revise the workflow above for beginners. Make each step executable in under 10 minutes.' },
+			{ label: 'Lab B — Prompt 3: Audit project files', code: 'Analyze @docs/course-outline.md and @docs/lab-guide.md. Return: architecture/structure summary and the top risks for workshop delivery.' },
+			{ label: 'Lab B — Prompt 4: Ranked action plan (follow-up)', code: 'From that summary, give me the top 5 improvements ranked by impact and effort as a markdown table.' },
+			{ label: 'Lab B — Prompt 5: Day-1 quick wins (follow-up)', code: 'From that action plan, list 3 quick wins that can be done today. For each include the exact owner and expected result.' },
+			{ label: 'Step 7 — Exit REPL', code: '/quit' },
 		],
 		checklist: [
 			'workflow-basics.md created (≥5 steps with quality check + fallback)',
