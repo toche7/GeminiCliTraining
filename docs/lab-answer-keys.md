@@ -16,16 +16,21 @@ Sample excerpt:
 - Ranked priorities 1-5
 - Includes impact and effort
 - Clear first-day quick wins
+- Includes a short note on how `gemini.md` changed scope, format, or prioritization
 
 Sample priority item:
 | Priority | Action | Impact | Effort | Why |
 |---|---|---|---|---|
 | 1 | Add command-level instructions for each lab | High | Low | Removes execution ambiguity for beginners |
 
+Sample instruction-effect note:
+- `gemini.md` made the audit more classroom-specific by separating learner-facing fixes from instructor-facing fixes and by ranking actions in impact/effort order.
+
 ## Lab C - Good Output Characteristics
 - Thai and English versions both present
 - Message consistency across social, email, hero copy
 - Strong CTA with deadline and action verb
+- Second REPL revision sharpens differentiation without changing the core offer
 
 Sample CTA line:
 - EN: Register this week to cut report preparation time by 30%.

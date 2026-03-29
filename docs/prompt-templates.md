@@ -57,6 +57,15 @@ Please provide:
 4) suggested implementation order
 Format: markdown table with Impact, Effort, Priority, Why"
 
+### Repo Instruction Test
+"Analyze this project twice.
+Pass 1: use only the project files.
+Pass 2: follow @gemini.md as repo guidance.
+Then summarize:
+1) what changed in scope or format
+2) which version is more useful
+3) whether the instruction file should be kept, edited, or removed"
+
 ## 3) Automated Content Generation
 
 ### Baseline
@@ -78,6 +87,18 @@ Requirements:
 - Thai + English versions
 - consistent message
 - avoid unsupported claims"
+
+### REPL Follow-up Prompts
+"Revise the previous draft for a stronger CTA.
+Keep the same core message.
+Make each channel feel distinct instead of repeating the same wording."
+
+"Review the latest draft against this checklist:
+- message consistency
+- audience fit
+- CTA clarity
+- unsupported claims
+Return pass/fail plus one concrete fix per item."
 
 ## 4) Web App AI Response Formatting
 
@@ -126,3 +147,19 @@ Keep the same structure but improve precision."
 2) Identify possible errors/hallucinations
 3) Mark confidence for each key claim
 4) Suggest what data to verify first"
+
+## 8) Repo Instruction File Template
+
+### Template
+"# gemini.md
+
+Purpose: repo guidance for Gemini CLI work in this project.
+
+When working in this repository:
+- Prioritize [audience or user type]
+- Prefer outputs in [format]
+- Separate [group A] and [group B] recommendations
+- Rank changes by [impact/effort/risk]
+- Avoid [unsupported behavior]
+- If context is missing, ask for or cite [required files/data]
+"

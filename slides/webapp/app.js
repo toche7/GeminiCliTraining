@@ -48,11 +48,13 @@ const labData = {
 
 	'Module B|Lab B0: Interactive Mode': {
 		title: 'Lab B0: Interactive Mode & Slash Commands',
-		objective: 'Get comfortable with the Gemini CLI REPL. Explore slash commands, manage session context, and practice resetting and switching models before any file-based labs.',
+		objective: 'Get comfortable with the Gemini CLI REPL. Explore slash commands, run optional /init bootstrap, manage session context, and practice resetting and switching models before any file-based labs.',
 		commands: [
 			{ label: 'Step 1 — Enter interactive mode', code: 'gemini' },
 			{ label: 'Step 1 — Check version', code: '/about' },
 			{ label: 'Step 1 — Explore all commands', code: '/help' },
+			{ label: 'Step 2 — Optional bootstrap', code: '/init' },
+			{ label: 'Step 2 — Inspect generated repo guidance', code: 'cat gemini.md' },
 			{ label: 'Step 2 — After 2 prompts: review session', code: '/history' },
 			{ label: 'Step 2 — Check token usage', code: '/stats' },
 			{ label: 'Step 3 — Compress history', code: '/compress' },
@@ -64,6 +66,7 @@ const labData = {
 		checklist: [
 			'Noted your Gemini CLI version from /about',
 			'Found 3 commands from /help you didn\'t know before',
+			'If available, /init was run and gemini.md was reviewed',
 			'/stats token count checked before compress',
 			'/compress run and token count dropped after',
 			'/reset cleared the conversation successfully',
@@ -77,20 +80,22 @@ const labData = {
 
 	'Module B|Hands-on A+B': {
 		title: 'Lab A + B: Workflow Design & Project Audit',
-		objective: 'Lab A: Design a reusable 5-step AI workflow. Lab B: Audit a real project and produce a ranked action plan with day-1 quick wins. Run entirely in REPL — one session, conversational follow-ups.',
+		objective: 'Lab A: Design a reusable 5-step AI workflow. Lab B: Audit a real project, compare baseline vs guided output with gemini.md, and produce a ranked action plan with day-1 quick wins. Run entirely in REPL — one session, conversational follow-ups.',
 		commands: [
 			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
 			{ label: 'Lab A — Prompt 1: Generate workflow draft', code: 'You are a workflow coach. Design a 5-step AI-assisted workflow for weekly report writing. For each step include: goal, input, output, quality check, risk, fallback. Output as a markdown table.' },
 			{ label: 'Lab A — Prompt 2: Improve for beginners (follow-up)', code: 'Revise the workflow above for beginners. Make each step executable in under 10 minutes.' },
-			{ label: 'Lab B — Prompt 3: Audit project files', code: 'Analyze @docs/course-outline.md and @docs/lab-guide.md. Return: architecture/structure summary and the top risks for workshop delivery.' },
-			{ label: 'Lab B — Prompt 4: Ranked action plan (follow-up)', code: 'From that summary, give me the top 5 improvements ranked by impact and effort as a markdown table.' },
-			{ label: 'Lab B — Prompt 5: Day-1 quick wins (follow-up)', code: 'From that action plan, list 3 quick wins that can be done today. For each include the exact owner and expected result.' },
-			{ label: 'Step 7 — Exit REPL', code: '/quit' },
+			{ label: 'Lab B — Prompt 3: Audit project files (baseline)', code: 'Analyze @docs/course-outline.md and @docs/lab-guide.md. Return: architecture/structure summary and the top risks for workshop delivery.' },
+			{ label: 'Lab B — Prompt 4: Audit with repo guidance', code: 'Analyze @docs/course-outline.md and @docs/lab-guide.md. Follow @gemini.md. Return: architecture/structure summary, the top risks for workshop delivery, and an Instruction Effect note explaining what changed because of gemini.md.' },
+			{ label: 'Lab B — Prompt 5: Ranked action plan (follow-up)', code: 'From the guided summary above, give me the top 5 improvements ranked by impact and effort as a markdown table.' },
+			{ label: 'Lab B — Prompt 6: Day-1 quick wins (follow-up)', code: 'From that action plan, list 3 quick wins that can be done today. For each include the exact owner and expected result.' },
+			{ label: 'Step 8 — Exit REPL', code: '/quit' },
 		],
 		checklist: [
 			'workflow-basics.md created (≥5 steps with quality check + fallback)',
 			'workflow-basics-v2.md revised for beginners',
-			'audit-summary.md includes ≥3 risks',
+			'Compared baseline and guided audit output',
+			'audit-summary.md includes ≥3 risks and an Instruction Effect note',
 			'action-plan.md has ranked top 5',
 			'quick-wins.md lists owner + expected result',
 		],
@@ -102,39 +107,51 @@ const labData = {
 
 	'Module C|Content Automation': {
 		title: 'Lab C: Automated Content Pack',
-		objective: 'Generate multi-channel content (social, email, landing page) from one brief. Keep message consistent across channels and iterate for stronger CTA.',
+		objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
 		commands: [
-			{ label: 'Generate first content pack', code: 'gemini -p "You are a senior content strategist. From this brief create Thai+English outputs: social caption <=80 words, email draft 120-180 words, landing hero copy with headline subheadline CTA. Brief: Product=AI workshop for junior teams; Audience=team leads and new analysts; Value=faster reporting with reliable AI workflows; Tone=practical and confident; CTA=register this week." > deliverables/TEAM_ALPHA/content-pack.md' },
-			{ label: 'Improve CTA + differentiation', code: 'gemini -p "Revise @deliverables/TEAM_ALPHA/content-pack.md with stronger CTA and clearer differentiation from generic AI training." > deliverables/TEAM_ALPHA/content-pack-v2.md' },
+			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
+			{ label: 'Prompt 1 — Baseline prompt', code: 'Write social post and email for my workshop.' },
+			{ label: 'Prompt 2 — Generate structured content pack', code: 'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nBrief:\n- Product: AI workshop for junior teams\n- Audience: team leads and new analysts\n- Value: faster reporting with reliable AI workflows\n- Tone: practical and confident\n- CTA: register this week\nKeep message consistent and avoid unsupported claims.' },
+			{ label: 'Prompt 3 — Strengthen CTA and differentiation', code: 'Revise the previous content pack.\nMake the CTA stronger and more specific.\nDifferentiate this workshop from generic AI training.\nKeep the same 3 channels and keep Thai + English output.' },
+			{ label: 'Prompt 4 — Self-check the latest draft', code: 'Review the latest content pack against this checklist:\n- message consistency across all 3 channels\n- audience fit for team leads and new analysts\n- CTA includes action verb, deadline, and outcome\n- no unsupported claims\nReturn pass/fail with one fix per item.' },
+			{ label: 'Step 5 — Exit REPL', code: '/quit' },
 		],
 		checklist: [
-			'content-pack.md has all 3 channels (social, email, landing)',
+			'content-pack.md saved from the first strong REPL draft',
+			'content-pack-v2.md saved from the revised REPL draft',
+			'All 3 channels are present (social, email, landing)',
 			'Thai and English versions present',
 			'CTA contains action verb + deadline + outcome',
-			'content-pack-v2.md with stronger differentiation saved',
+			'v2 has stronger differentiation from generic AI training',
 		],
 		prompts: {
 			baseline: 'Write social post and email for my workshop.',
-			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nKeep message consistent and avoid unsupported claims.',
+			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nKeep message consistent and avoid unsupported claims.',
 		},
 	},
 
 	'Module C|Lab C: Content Pack': {
 		title: 'Lab C: Automated Content Pack',
-		objective: 'Generate multi-channel content (social, email, landing page) from one brief. Keep message consistent across channels and iterate for stronger CTA.',
+		objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
 		commands: [
-			{ label: 'Generate first content pack', code: 'gemini -p "You are a senior content strategist. From this brief create Thai+English outputs: social caption <=80 words, email draft 120-180 words, landing hero copy with headline subheadline CTA. Brief: Product=AI workshop for junior teams; Audience=team leads and new analysts; Value=faster reporting with reliable AI workflows; Tone=practical and confident; CTA=register this week." > deliverables/TEAM_ALPHA/content-pack.md' },
-			{ label: 'Improve CTA + differentiation', code: 'gemini -p "Revise @deliverables/TEAM_ALPHA/content-pack.md with stronger CTA and clearer differentiation from generic AI training." > deliverables/TEAM_ALPHA/content-pack-v2.md' },
+			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
+			{ label: 'Prompt 1 — Baseline prompt', code: 'Write social post and email for my workshop.' },
+			{ label: 'Prompt 2 — Generate structured content pack', code: 'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nBrief:\n- Product: AI workshop for junior teams\n- Audience: team leads and new analysts\n- Value: faster reporting with reliable AI workflows\n- Tone: practical and confident\n- CTA: register this week\nKeep message consistent and avoid unsupported claims.' },
+			{ label: 'Prompt 3 — Strengthen CTA and differentiation', code: 'Revise the previous content pack.\nMake the CTA stronger and more specific.\nDifferentiate this workshop from generic AI training.\nKeep the same 3 channels and keep Thai + English output.' },
+			{ label: 'Prompt 4 — Self-check the latest draft', code: 'Review the latest content pack against this checklist:\n- message consistency across all 3 channels\n- audience fit for team leads and new analysts\n- CTA includes action verb, deadline, and outcome\n- no unsupported claims\nReturn pass/fail with one fix per item.' },
+			{ label: 'Step 5 — Exit REPL', code: '/quit' },
 		],
 		checklist: [
-			'content-pack.md has all 3 channels (social, email, landing)',
+			'content-pack.md saved from the first strong REPL draft',
+			'content-pack-v2.md saved from the revised REPL draft',
+			'All 3 channels are present (social, email, landing)',
 			'Thai and English versions present',
 			'CTA contains action verb + deadline + outcome',
-			'content-pack-v2.md with stronger differentiation saved',
+			'v2 has stronger differentiation from generic AI training',
 		],
 		prompts: {
 			baseline: 'Write social post and email for my workshop.',
-			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nKeep message consistent and avoid unsupported claims.',
+			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nKeep message consistent and avoid unsupported claims.',
 		},
 	},
 

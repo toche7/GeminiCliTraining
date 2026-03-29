@@ -16,9 +16,10 @@
 Participants can:
 1. Run Gemini CLI in interactive and headless modes.
 2. Provide file context and produce useful AI outputs safely.
-3. Use prompt templates for repeatable content generation.
-4. Explain and implement a simple web app integration pattern.
-5. Summarize CSV data into actionable recommendations.
+3. Test and use a repo-level instruction file with `gemini.md`.
+4. Use prompt templates for repeatable content generation.
+5. Explain and implement a simple web app integration pattern.
+6. Summarize CSV data into actionable recommendations.
 
 ## Agenda (Minute-by-Minute)
 
@@ -57,32 +58,39 @@ Participants can:
     - Interactive mode
     - One-shot headless mode
     - Resume sessions
+    - Optional project bootstrap with `/init`
   - Context input:
     - Include file/folder context
+    - Test repo guidance with `gemini.md`
+    - Compare implicit vs explicit `@gemini.md` usage
     - Ask for summaries and action lists
   - Shell workflow:
     - Build command + AI explanation pattern
 - Demo flow:
+  - Run `/init` for first-time repo bootstrap (optional)
   - Analyze a project folder
+  - Add or inspect `gemini.md` and test instruction effect
   - Ask for improvement plan by priority
   - Generate a short status report
 
 ### 1:25-1:45 | Lab B (20 min)
 - Task:
-  - Use Gemini CLI to audit a small local project and create prioritized action items
+  - Use Gemini CLI to audit a small local project, test `gemini.md`, and create prioritized action items
 - Deliverable:
+  - audit-summary.md with instruction-effect note
   - action-plan.md with 5 priorities and rationale
 - Assessment:
   - priorities are clear, specific, and feasible
+  - learner can explain whether `gemini.md` changed the output
 
 ### 1:45-2:20 | Module C: ✍️ สร้าง Content อัตโนมัติด้วย AI (35 min)
 - Topics:
-  - Prompt templates for repeatability
+  - REPL-first prompt iteration from one shared brief
   - Tone, audience, and channel adaptation
-  - Batch generation strategy
+  - Follow-up prompts for revision and self-review
   - Structured outputs for copy/review workflows
 - Demo:
-  - Product brief -> social post + email + landing intro (Thai + English)
+  - Product brief -> social post + email + landing intro (Thai + English) in one REPL session
 - Quality checklist:
   - Tone fit
   - CTA clarity
@@ -90,9 +98,9 @@ Participants can:
 
 ### 2:20-2:40 | Lab C (20 min)
 - Task:
-  - Create a 3-channel content pack from one brief
+  - Create a 3-channel content pack from one brief in REPL, then refine it with follow-up prompts
 - Deliverable:
-  - content-pack.md with:
+  - content-pack.md and content-pack-v2.md with:
     - social caption
     - email draft
     - landing page hero copy
@@ -163,6 +171,7 @@ Participants can:
 - docs/demo-commands.md
 - docs/instructor-runbook.md
 - docs/lab-answer-keys.md
+- gemini.md
 - materials/sample-data/sales.csv
 - materials/sample-data/support_tickets.csv
 - materials/webapp-starter

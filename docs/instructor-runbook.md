@@ -15,6 +15,7 @@ Operational guide for running the full 3-hour session with minimal ambiguity.
 3. Open timer and keep it visible.
 4. Prepare fallback screenshots for auth/network problems.
 5. Confirm sample datasets are accessible.
+6. Verify the `gemini.md` demo path works on trainer machine.
 
 ## Delivery Script by Block
 
@@ -28,15 +29,19 @@ Operational guide for running the full 3-hour session with minimal ambiguity.
 
 ### Block 2 (0:45-1:45)
 - Module B + Lab B.
-- Key message: context-first prompting and ranking outputs by impact.
+- Key message: REPL basics, optional `/init` bootstrap, context-first prompting, repo guidance via `gemini.md`, and ranking outputs by impact.
 - If behind by >5 min:
   - Skip extended Q&A and move to guided prompt template.
+- Fallback for instruction-file demo:
+  - If Gemini CLI does not auto-read `gemini.md` in the learner environment, require explicit `@gemini.md` in the prompt so the experiment still works.
+  - If `/init` is unavailable in learner environments, skip bootstrap and continue with the instructor-provided `gemini.md`.
 
 ### Block 3 (1:45-2:40)
 - Module C + Lab C.
-- Key message: one brief can become multi-channel content with constraints.
+- Key message: keep one REPL session open, generate from one brief, then improve the draft with targeted follow-up prompts.
 - Watch for common issue:
   - outputs too generic -> ask teams to add length limits and audience details.
+  - session drift -> have teams restate the brief in one compact prompt or use `/reset` before retrying.
 
 ### Block 4 (2:40-3:35)
 - Module D+E and Labs D+E.
@@ -68,4 +73,4 @@ Operational guide for running the full 3-hour session with minimal ambiguity.
 ## Post-Class Follow-Up
 1. Collect artifacts from deliverables folders.
 2. Share best examples and common mistakes.
-3. Send next-step path: standard prompt library and workflow templates.
+3. Send next-step path: standard prompt library, `gemini.md` template, and workflow templates.

@@ -13,18 +13,46 @@ gemini -p "Design a 5-step workflow for weekly reporting with risks, quality che
 
 ## Module B Demo
 ```bash
+# Optional first-time bootstrap inside REPL
+gemini
+/init
+/quit
+
+cat gemini.md
 gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, and top 3 improvements."
+gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 strengths, 3 risks, top 3 improvements, and a short note explaining how gemini.md changed the output."
 ```
 
 ## Lab B Artifact Commands
 ```bash
-gemini -p "Analyze @docs/course-outline.md and @docs/lab-guide.md. Return architecture summary and risks." > deliverables/TEAM_ALPHA/audit-summary.md
+gemini -p "Analyze @docs/course-outline.md and @docs/lab-guide.md. Return architecture summary and risks." > deliverables/TEAM_ALPHA/audit-summary-baseline.md
+gemini -p "Analyze @docs/course-outline.md and @docs/lab-guide.md. Follow @gemini.md. Return architecture summary and risks. End with an Instruction Effect section." > deliverables/TEAM_ALPHA/audit-summary.md
 gemini -p "Using @deliverables/TEAM_ALPHA/audit-summary.md, provide top 5 improvements ranked by impact and effort." > deliverables/TEAM_ALPHA/action-plan.md
 ```
 
 ## Module C Demo
 ```bash
-gemini -p "Create Thai+English social caption, email draft, and landing hero copy from this brief: Product=AI workshop; Audience=team leads; Value=faster reporting; Tone=practical; CTA=register this week."
+cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
+gemini
+```
+
+```text
+You are a senior content strategist.
+From this brief, create Thai+English outputs:
+1) social caption (<=80 words)
+2) email draft (120-180 words)
+3) landing hero copy (headline + subheadline + CTA)
+Brief:
+- Product: AI workshop
+- Audience: team leads
+- Value: faster reporting
+- Tone: practical
+- CTA: register this week
+Keep message consistent and avoid unsupported claims.
+```
+
+```text
+Revise the previous content pack with a stronger CTA and clearer differentiation from generic AI training.
 ```
 
 ## Module D Demo

@@ -123,6 +123,7 @@ Output format: markdown table
 - Interactive flow
 - One-shot prompt flow
 - Session continuation
+- Optional repo bootstrap with `/init`
 
 ### Live Demo Commands
 ```bash
@@ -135,30 +136,79 @@ gemini -p "Summarize top 5 capabilities of Gemini CLI for beginners"
 - EN: Teach learners when to use each mode to control time and consistency.
 
 ### Transition
-- "Next: improve output quality by adding file context."
+- "Before context injection, show a quick `/init` bootstrap pattern."
 
-## Slide 9 - Context Injection (5 min)
+## Slide 9 - REPL Bootstrap with /init (3 min)
+### On Slide
+- `/init` helps bootstrap repo guidance for first-time setup
+- Run once per repo, then review and edit generated guidance
+- If unavailable, continue with explicit `@gemini.md`
+
+### Live Demo Command
+```bash
+gemini
+/init
+/quit
+cat gemini.md
+```
+
+### Speaker Notes
+- TH: `/init` เป็นตัวช่วยตั้งต้น ไม่ใช่การตั้งค่าที่สมบูรณ์ ต้องตรวจไฟล์ที่ได้เสมอ
+- EN: Treat `/init` as scaffolding; refine the generated guidance before relying on it.
+- TH: ถ้าบางเครื่องไม่มีคำสั่งนี้ ให้ข้ามและใช้ `@gemini.md` แบบ explicit ต่อได้ทันที
+
+### Transition
+- "Now use file context and compare guided vs baseline output."
+
+## Slide 10 - Context Injection (5 min)
 ### On Slide
 - Use local files and folders
+- Test repo guidance with `gemini.md`
 - Ask summary first
 - Then request prioritized actions
 
 ### Live Demo Command
 ```bash
 gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, and next actions"
+gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 strengths, 3 risks, next actions, and note what changed because of gemini.md"
 ```
 
 ### Speaker Notes
 - TH: ให้ AI อ่านไฟล์จริงก่อน จะลดการเดา
 - EN: Context first, recommendations second.
+- TH: ถ้า environment ไม่อ่าน `gemini.md` อัตโนมัติ ให้ใส่ `@gemini.md` ใน prompt ตรง ๆ
+- EN: If auto-loading is unavailable, explicit file inclusion still lets learners test the pattern.
 
 ### Transition
-- "Hands-on block: Lab A and B."
+- "Before the lab, define what gemini.md is and how to test it."
 
-## Slide 10 - Hands-on A+B (3 min)
+## Slide 11 - What Is gemini.md? (4 min)
+### On Slide
+- Repo-level guidance file for Gemini CLI
+- Stores repeatable rules for this project
+- Best for format, priority, and safety constraints
+- Test by comparing with and without `@gemini.md`
+
+### Live Demo Command
+```bash
+cat gemini.md
+gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, and next actions"
+gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 strengths, 3 risks, next actions, and explain what changed because of gemini.md"
+```
+
+### Speaker Notes
+- TH: อธิบายว่า `gemini.md` ไม่ใช่ magic file แต่เป็น repo guidance ที่ช่วยให้ output สม่ำเสมอขึ้น
+- EN: Treat it as a project contract for the model: preferred format, ranking logic, and guardrails.
+- TH: สิ่งที่ควรใส่คือรูปแบบผลลัพธ์, วิธีจัดลำดับความสำคัญ, และข้อห้ามสำคัญของ repo นี้
+- EN: The proof is comparative: if the file is useful, the guided output should become more specific and more reusable.
+
+### Transition
+- "Now use that pattern in the hands-on block."
+
+## Slide 12 - Hands-on A+B (3 min)
 ### On Slide
 - Lab A: Workflow design artifact
-- Lab B: Project audit action plan
+- Lab B: Project audit + `gemini.md` test
 - Output files required
 
 ### Trainer Cue
@@ -168,24 +218,38 @@ gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, and 
 ### Transition
 - "After operations, we automate content at scale."
 
-## Slide 11 - Content Automation (4 min)
+## Slide 13 - Content Automation (4 min)
 ### On Slide
 One brief -> many channels
+One REPL session -> iterative refinement
 Consistency + tone control + CTA alignment
 
 ### Speaker Notes
-- TH: ใช้ prompt template เดียว แล้วแตก output ตามช่องทาง
-- EN: Reusability is the key productivity gain.
+- TH: เปิด REPL ครั้งเดียว แล้วใช้ brief เดิมกับ follow-up prompts เพื่อปรับ content ต่อเนื่อง
+- EN: Reusability plus iteration is the key productivity gain.
 
 ### Live Demo
 ```bash
-gemini -p "Create Thai+English social post, email draft, and hero copy from this brief: ..."
+gemini
+```
+
+```text
+You are a senior content strategist.
+From this brief, create Thai+English outputs:
+1) social caption (<=80 words)
+2) email draft (120-180 words)
+3) landing hero copy (headline + subheadline + CTA)
+Keep message consistent and avoid unsupported claims.
+```
+
+```text
+Revise the previous draft with a stronger CTA and clearer differentiation from generic AI training.
 ```
 
 ### Transition
-- "Quality checklist ensures content is usable, not just creative."
+- "Keep the same REPL session open, then use the quality checklist to tighten the draft."
 
-## Slide 12 - Content Quality Checklist (3 min)
+## Slide 14 - Content Quality Checklist (3 min)
 ### On Slide
 - Message consistency
 - Audience match
@@ -193,12 +257,12 @@ gemini -p "Create Thai+English social post, email draft, and hero copy from this
 - No unsupported claims
 
 ### Audience Checkpoint
-- Ask teams to self-score content 1-5 on each criterion.
+- Ask teams to self-score the latest REPL draft 1-5 on each criterion.
 
 ### Transition
 - "Now we connect AI output into an app flow."
 
-## Slide 13 - Web App Integration Pattern (4 min)
+## Slide 15 - Web App Integration Pattern (4 min)
 ### On Slide
 Frontend form -> backend endpoint -> AI -> structured JSON response
 
@@ -212,7 +276,7 @@ Frontend form -> backend endpoint -> AI -> structured JSON response
 ### Transition
 - "Guardrails prevent security and reliability issues."
 
-## Slide 14 - Integration Guardrails (4 min)
+## Slide 16 - Integration Guardrails (4 min)
 ### On Slide
 - Keep keys server-side
 - Add timeout handling
@@ -230,7 +294,7 @@ curl -X POST http://localhost:3000/api/generate -H "Content-Type: application/js
 ### Transition
 - "Next we apply similar structure to data analysis."
 
-## Slide 15 - Data Insight Pattern (4 min)
+## Slide 17 - Data Insight Pattern (4 min)
 ### On Slide
 Raw CSV -> trend extraction -> anomaly detection -> recommendations
 
@@ -246,7 +310,7 @@ gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/s
 ### Transition
 - "Insights must be manager-ready and actionable."
 
-## Slide 16 - Manager-Ready Reporting (3 min)
+## Slide 18 - Manager-Ready Reporting (3 min)
 ### On Slide
 - Concise summary
 - Quant-backed findings
@@ -259,7 +323,7 @@ gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/s
 ### Transition
 - "Final activity is a short capstone showcase."
 
-## Slide 17 - Capstone Brief (3 min)
+## Slide 19 - Capstone Brief (3 min)
 ### On Slide
 Build one end-to-end workflow and present in 3 minutes
 
@@ -272,7 +336,7 @@ Build one end-to-end workflow and present in 3 minutes
 ### Transition
 - "Scoring is transparent. Here is the rubric."
 
-## Slide 18 - Evaluation Rubric (3 min)
+## Slide 20 - Evaluation Rubric (3 min)
 ### On Slide
 - Framing
 - Prompt quality
@@ -288,7 +352,7 @@ Build one end-to-end workflow and present in 3 minutes
 ### Transition
 - "Before closing, avoid these common mistakes."
 
-## Slide 19 - Common Pitfalls (3 min)
+## Slide 21 - Common Pitfalls (3 min)
 ### On Slide
 - Vague prompts
 - Missing output format
@@ -302,7 +366,7 @@ Build one end-to-end workflow and present in 3 minutes
 ### Transition
 - "Last slide: what to do tomorrow after this workshop."
 
-## Slide 20 - Next Steps (2 min)
+## Slide 22 - Next Steps (2 min)
 ### On Slide
 - Build team prompt library
 - Standardize AI workflow templates
