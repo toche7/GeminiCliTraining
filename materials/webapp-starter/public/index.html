@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini Workshop Starter</title>
+    <style>
+      :root {
+        --bg: #f3f7f4;
+        --panel: #ffffff;
+        --primary: #0f766e;
+        --primary-2: #115e59;
+        --text: #102a2e;
+        --muted: #4b6b70;
+        --border: #cfe3de;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 20%, #e9f7f3 0%, transparent 35%),
+          radial-gradient(circle at 90% 0%, #dff0ec 0%, transparent 30%),
+          var(--bg);
+      }
+
+      .wrap {
+        max-width: 900px;
+        margin: 32px auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 10px 24px rgba(16, 42, 46, 0.08);
+      }
+
+      h1 {
+        margin-top: 0;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: var(--muted);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        margin: 10px 0 14px;
+      }
+
+      button {
+        border: none;
+        background: linear-gradient(120deg, var(--primary), var(--primary-2));
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      pre {
+        margin-top: 16px;
+        background: #f7fbfa;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        white-space: pre-wrap;
+      }
+
+      @media (max-width: 640px) {
+        .wrap {
+          margin: 12px auto;
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>AI Web Integration Lab Starter</h1>
+        <p>
+          Enter text below and call the backend endpoint. This starter returns mock
+          structured output so learners can focus on integration flow first.
+        </p>
+
+        <label for="input">Input</label>
+        <textarea id="input" placeholder="Describe your task or business context..."></textarea>
+        <button id="runBtn">Generate</button>
+
+        <pre id="output">Result will appear here...</pre>
+      </div>
+    </div>
+
+    <script>
+      const inputEl = document.getElementById('input');
+      const runBtn = document.getElementById('runBtn');
+      const outputEl = document.getElementById('output');
+
+      async function runGenerate() {
+        outputEl.textContent = 'Loading...';
+
+        try {
+          const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: inputEl.value })
+          });
+
+          const data = await response.json();
+          outputEl.textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          outputEl.textContent = `Request failed: ${error.message}`;
+        }
+      }
+
+      runBtn.addEventListener('click', runGenerate);
+    </script>
+  </body>
+</html>

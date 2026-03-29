@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Gemini CLI Workshop Slides</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand">CBTU</div>
+			<nav id="progressNav" class="progress-nav" aria-label="Module navigation">
+				<button type="button">Kickoff</button>
+				<button type="button">Mod A</button>
+				<button type="button">Mod B</button>
+				<button type="button">Mod C</button>
+				<button type="button">Mod D</button>
+				<button type="button">Mod E</button>
+				<button type="button">Capstone</button>
+			</nav>
+			<div class="controls">
+				<span id="slideCounter" class="slide-counter"></span>
+				<button id="labPanelToggle" type="button" class="lab-toggle-btn" style="display:none" title="Toggle lab panel (L)">⚗ Lab</button>
+				<button id="prevModuleBtn" type="button">◀◀</button>
+				<button id="prevSlideBtn" type="button">◀</button>
+				<button id="nextSlideBtn" type="button">▶</button>
+				<button id="nextModuleBtn" type="button">▶▶</button>
+			</div>
+		</header>
+
+		<div class="workspace">
+		<main class="slides" id="slides">
+			<section class="slide active cover-slide" data-module="Kickoff" data-title="Title" data-time="2 min">
+                <p class="cover-kicker">Workshop Series 2026</p>
+				<h1>AI Agent in Action</h1>
+				<p class="subtitle">Gemini CLI Practical Workshop</p>
+				<p class="cover-author">Taweesak Samanchuen</p>
+				<div class="cover-chips">
+					<span>60% Hands-on</span>
+					<span>3 Hours</span>
+					<span>Output-first</span>
+				</div>
+				<ul>
+					<li>เราจะสร้าง Workflow จริง ไม่ใช่แค่ prompts</li>
+					<li>เราจะใช้ Gemini CLI กับการสร้าง content, web app, และวิเคราะห์ข้อมูล</li>
+					<li>เราจะได้เรียนรู้การสร้างเทมเพลตที่ใช้ซ้ำได้และกระบวนการส่งมอบผลลัพธ์</li>
+				</ul>
+
+
+			</section>
+
+			<section class="slide" data-module="Kickoff" data-title="Why This Course" data-time="2 min">
+				<h2>ทำไมต้องเรียนเรื่อง AI Agent</h2>
+				<ul>
+					<li>โลกกำลังเปลี่ยนจาก AI ที่แค่ตอบคำถาม ไปสู่ AI Agent ที่วางแผน ตัดสินใจ และลงมือทำงานได้เอง</li>
+					<li>Gemini CLI คือเครื่องมือที่ช่วยให้เราสั่งงาน AI Agent ได้โดยตรงจาก terminal ไม่ต้องผ่าน UI</li>
+					<li>เมื่อเข้าใจวิธีออกแบบ Agent workflow เราสามารถสร้างระบบที่ทำงานซ้ำได้อย่างแม่นยำและปรับขยายได้</li>
+					<li>course นี้จะพาลงมือสร้าง AI Agent workflow จริง ตั้งแต่ต้นจนได้ผลลัพธ์ที่ใช้งานได้ทันที</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Kickoff" data-title="Outcomes" data-time="2 min">
+				<h2>Outcomes</h2>
+				<ul>
+					<li>สามารถออกแบบ AI Agent workflow ได้</li>
+					<li>สามารถใช้ Gemini CLI ได้อย่างมั่นใจ</li>
+					<li>สร้าง content, app flows, และ data insights</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Kickoff" data-title="Agenda" data-time="3 min">
+				<h2>Agenda</h2>
+				<ol>
+					<li>Module A: AI Agents and Workflow Design</li>
+					<li>Module B: Gemini CLI Operations</li>
+					<li>Module C: Content Automation</li>
+					<li>Module D: Web App Integration</li>
+					<li>Module E: Data Insight</li>
+					<li>Capstone and Wrap-up</li>
+				</ol>
+			</section>
+
+			<section class="slide" data-module="Kickoff" data-title="Installation &amp; Setup" data-time="5 min">
+				<h2>Install &amp; Authenticate Gemini CLI</h2>
+				<p class="slide-label">Step 1 — Install</p>
+				<pre><code>npm install -g @google/gemini-cli</code></pre>
+				<p class="slide-label">Step 2 — Authenticate</p>
+				<pre><code>gemini auth login</code></pre>
+				<p class="slide-label">Step 3 — Verify it works</p>
+				<pre><code>gemini --version
+gemini -p "Say hello in one sentence"</code></pre>
+				<p class="muted-note">Requires Node.js 18+ &nbsp;|&nbsp; Google account for auth &nbsp;|&nbsp; Internet connection</p>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Agent Loop" data-time="4 min">
+				<h2>Module A: Agent Loop</h2>
+				<svg class="agent-loop-svg" viewBox="0 0 780 200" xmlns="http://www.w3.org/2000/svg">
+					<defs>
+						<marker id="fwd" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+							<polygon points="0 0, 10 3.5, 0 7" fill="#166d45"/>
+						</marker>
+						<marker id="back" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+							<polygon points="0 0, 10 3.5, 0 7" fill="#1f8f5a"/>
+						</marker>
+					</defs>
+
+					<!-- Return loop: Validate → down → Iterate → left → up → Intent -->
+					<path d="M 690,70 L 690,155 L 90,155 L 90,70"
+						fill="none" stroke="#1f8f5a" stroke-width="2.5" stroke-dasharray="6,4"
+						marker-end="url(#back)"/>
+
+					<!-- Iterate pill on return path -->
+					<rect x="330" y="138" width="120" height="34" rx="10" fill="#166d45"/>
+					<text x="390" y="160" text-anchor="middle" font-size="14" font-weight="700" fill="white" font-family="Avenir Next, Segoe UI, sans-serif">Iterate</text>
+
+					<!-- Caption under return arrow -->
+					<text x="390" y="188" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">ปรับ Intent ใหม่แล้ววนซ้ำ</text>
+
+					<!-- Intent -->
+					<rect x="35" y="20" width="110" height="50" rx="10" fill="#e8f8ee" stroke="#166d45" stroke-width="2"/>
+					<text x="90" y="49" text-anchor="middle" font-size="15" font-weight="700" fill="#166d45" font-family="Avenir Next, Segoe UI, sans-serif">Intent</text>
+					<text x="90" y="84" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">กำหนดเป้าหมาย</text>
+
+					<line x1="145" y1="45" x2="183" y2="45" stroke="#166d45" stroke-width="2" marker-end="url(#fwd)"/>
+
+					<!-- Context -->
+					<rect x="185" y="20" width="110" height="50" rx="10" fill="#e8f8ee" stroke="#166d45" stroke-width="2"/>
+					<text x="240" y="49" text-anchor="middle" font-size="15" font-weight="700" fill="#166d45" font-family="Avenir Next, Segoe UI, sans-serif">Context</text>
+					<text x="240" y="84" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">ให้ข้อมูลที่เกี่ยวข้อง</text>
+
+					<line x1="295" y1="45" x2="333" y2="45" stroke="#166d45" stroke-width="2" marker-end="url(#fwd)"/>
+
+					<!-- Action -->
+					<rect x="335" y="20" width="110" height="50" rx="10" fill="#e8f8ee" stroke="#166d45" stroke-width="2"/>
+					<text x="390" y="49" text-anchor="middle" font-size="15" font-weight="700" fill="#166d45" font-family="Avenir Next, Segoe UI, sans-serif">Action</text>
+					<text x="390" y="84" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">Agent ลงมือทำ</text>
+
+					<line x1="445" y1="45" x2="483" y2="45" stroke="#166d45" stroke-width="2" marker-end="url(#fwd)"/>
+
+					<!-- Output -->
+					<rect x="485" y="20" width="110" height="50" rx="10" fill="#e8f8ee" stroke="#166d45" stroke-width="2"/>
+					<text x="540" y="49" text-anchor="middle" font-size="15" font-weight="700" fill="#166d45" font-family="Avenir Next, Segoe UI, sans-serif">Output</text>
+					<text x="540" y="84" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">ผลลัพธ์ที่ได้</text>
+
+					<line x1="595" y1="45" x2="633" y2="45" stroke="#166d45" stroke-width="2" marker-end="url(#fwd)"/>
+
+					<!-- Validate -->
+					<rect x="635" y="20" width="110" height="50" rx="10" fill="#e8f8ee" stroke="#166d45" stroke-width="2"/>
+					<text x="690" y="49" text-anchor="middle" font-size="15" font-weight="700" fill="#166d45" font-family="Avenir Next, Segoe UI, sans-serif">Validate</text>
+					<text x="690" y="84" text-anchor="middle" font-size="11" fill="#5d715d" font-family="Avenir Next, Segoe UI, sans-serif">ตรวจสอบผลลัพธ์</text>
+				</svg>
+				<p class="loop-caption">AI Agent ทำงานเป็นวงจร โดยเริ่มจากการกำหนด <strong>Intent</strong> ให้ชัดเจน จากนั้นให้ข้อมูล <strong>Context</strong> สั่ง <strong>Action</strong> รับ <strong>Output</strong> แล้ว <strong>Validate</strong> ผลลัพธ์ — หากยังไม่ดีพอ ให้ <strong>Iterate</strong> โดยกลับไปปรับ Intent ใหม่แล้ววนซ้ำ ไม่ใช่แค่ retry คำสั่งเดิม</p>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Intent to Prompt" data-time="3 min">
+				<h2>จาก Intent สู่ Prompt</h2>
+				<p class="loop-caption"><strong>Intent</strong> คือสิ่งที่คุณต้องการในหัว — ก่อนเปิด terminal เสมอ Prompt คือการแปล Intent นั้นให้ AI เข้าใจได้ชัดเจนโดยใช้ 5 กฎ</p>
+
+				<div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:8px;align-items:center;margin:16px 0">
+					<div style="background:var(--surface,#f0f7f4);border:2px solid var(--accent,#166d45);border-radius:10px;padding:14px 16px">
+						<p class="slide-label" style="margin:0 0 8px">Intent (ในหัวคุณ)</p>
+						<p style="margin:0">"ต้องการสรุปยอดขาย Q1 เพื่อนำเสนอทีม — ต้องดูได้ทันที ไม่ยาวเกินไป และต้องมีตัวเลขยืนยัน"</p>
+					</div>
+					<div style="text-align:center;font-size:28px;color:var(--accent,#166d45)">→</div>
+					<div style="background:var(--surface,#f0f7f4);border:2px solid var(--accent,#166d45);border-radius:10px;padding:14px 16px">
+						<p class="slide-label" style="margin:0 0 8px">Prompt (5 กฎ)</p>
+						<p style="margin:0"><strong>Role</strong> → senior analyst<br><strong>Goal</strong> → สรุปยอดขาย Q1 จากไฟล์แนบ<br><strong>Constraints</strong> → ภาษาไทย, ≤200 คำ<br><strong>Output format</strong> → markdown table<br><strong>Quality check</strong> → ทุก insight มีตัวเลขอ้างอิง</p>
+					</div>
+				</div>
+
+				<p class="muted-note">กฎข้อที่ขาดในหัวมักหลุดออกจาก prompt ด้วย → ผลลัพธ์เกินขอบเขตหรือ Validate ไม่ได้</p>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Prompt Rules" data-time="4 min">
+				<h2>Prompt Design Rules</h2>
+				<p class="loop-caption">5 กฎนี้คือสิ่งที่ต้องใส่ในทุก prompt เพื่อให้ Agent Loop ทำงานได้ครบวงจรตั้งแต่ Action จนถึง Validate</p>
+				<ul>
+					<li><strong>Role clarity</strong> — บอก AI ว่าเป็นใคร เช่น "คุณคือ senior analyst" ช่วยให้ตัดสินใจได้ถูกทิศทาง</li>
+					<li><strong>Goal</strong> — บอกว่าต้องการทำอะไร เช่น "สรุปยอดขาย Q1" คือหัวใจของ prompt ขาดไม่ได้</li>
+					<li><strong>Constraints</strong> — กำหนดขอบเขต เช่น ภาษา ความยาว หรือสิ่งที่ห้ามทำ ป้องกัน Output เกินขอบเขต</li>
+					<li><strong>Output contract</strong> — ระบุรูปแบบผลลัพธ์ล่วงหน้า เช่น markdown table, JSON ทำให้ Validate ง่ายขึ้น</li>
+					<li><strong>Quality checks</strong> — ตัวชี้วัดที่ใช้ใน Validate step เช่น "ต้องมีตัวเลขอ้างอิงทุก insight"</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Prompt Rules Example" data-time="4 min">
+				<h2>Prompt Design Rules — ตัวอย่าง</h2>
+				<p class="loop-caption">เปรียบเทียบ prompt ที่ <strong>ไม่มีโครงสร้าง</strong> กับ prompt ที่ใช้ 5 กฎ เพื่อให้เห็นความแตกต่างของผลลัพธ์</p>
+
+				<p class="slide-label">❌ Weak Prompt</p>
+				<pre><code>สรุปยอดขายให้หน่อย</code></pre>
+
+				<p class="slide-label">✅ Structured Prompt (5 Rules Applied)</p>
+				<pre><code>Role: You are a senior sales analyst with 10 years of experience.
+Goal: สรุปยอดขาย Q1 2026 จาก @sales.csv
+Constraints: ภาษาไทย, ความยาวไม่เกิน 200 คำ, ห้ามเดาตัวเลขที่ไม่มีในข้อมูล.
+Output format: markdown table with columns: Region | Revenue | Growth% | Key Insight
+Quality check: ทุก insight ต้องอ้างอิงตัวเลขจากข้อมูลจริงเท่านั้น</code></pre>
+
+				<ul style="margin-top:12px">
+					<li><strong>Role clarity</strong> → "senior sales analyst" กำหนดมุมมองและระดับการวิเคราะห์</li>
+					<li><strong>Goal</strong> → บอกว่าต้องการอะไร ไม่มีข้อนี้ AI ไม่รู้จะเริ่มต้น</li>
+					<li><strong>Constraints</strong> → ภาษาไทย + ความยาว + ห้ามเดา ป้องกัน hallucination</li>
+					<li><strong>Output contract</strong> → markdown table พร้อม column ที่ชัดเจน ทำให้ Validate ง่าย</li>
+					<li><strong>Quality check</strong> → กฎตรวจสอบที่ฝังอยู่ใน prompt ทำให้ AI self-check ก่อนส่งผล</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Safety" data-time="3 min">
+				<h2>Safety Model</h2>
+				<p class="loop-caption">ก่อนสั่ง Agent ให้ทำงานที่มีผลกระทบสูง ต้องเข้าใจ 3 กลไกนี้เพื่อป้องกันความเสียหายที่แก้ไขไม่ได้</p>
+				<ul>
+					<li><strong>Approval gates</strong> — กำหนดจุดที่ต้องให้มนุษย์อนุมัติก่อน Agent จะดำเนินการต่อ เช่น การลบไฟล์ การส่งอีเมล หรือการ deploy โค้ด</li>
+					<li><strong>Trust boundaries</strong> — ระบุขอบเขตที่ Agent มีสิทธิ์เข้าถึง เช่น อ่านได้แต่เขียนไม่ได้ หรือเข้าถึงได้เฉพาะ folder ที่กำหนด</li>
+					<li><strong>Risky command awareness</strong> — รู้จักคำสั่งที่อันตราย เช่น <code>rm -rf</code>, <code>DROP TABLE</code> และตั้งกฎให้ Agent ขอยืนยันก่อนทุกครั้ง</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module A" data-title="Lab A: Workflow Design" data-time="10 min">
+				<h2>Lab A: AI Workflow Design</h2>
+				<p class="slide-label">Objective</p>
+				<p>ออกแบบ AI-assisted workflow ที่ใช้ซ้ำได้สำหรับงานส่วนตัวหรือทีมที่ทำเป็นประจำ</p>
+				<ol>
+					<li>เลือกงานที่ทำซ้ำเป็นประจำ เช่น weekly report, meeting prep ฯลฯ</li>
+					<li>สร้าง workflow draft 5 ขั้นตอนด้วย Gemini CLI โดยใส่ 5 กฎครบใน prompt</li>
+					<li>อ่านผลลัพธ์แล้วสร้าง version ที่ดีขึ้น — เพิ่ม quality check และ fallback action ในแต่ละขั้นตอน</li>
+					<li>บันทึกเป็น <code>workflow-basics-v2.md</code> ในโฟลเดอร์ของทีม</li>
+				</ol>
+				<p class="slide-label" style="margin-top:14px">ตัวอย่าง — command ที่ใช้จริง (step 2)</p>
+				<pre><code>gemini -p "Role: You are a workflow coach.
+Goal: Design a 5-step AI-assisted workflow for weekly report writing.
+Constraints: ภาษาไทย, แต่ละขั้นตอนทำเสร็จได้ภายใน 10 นาที.
+Output format: markdown table with columns: ขั้นตอน | Input | Output | Quality Check | Fallback
+Quality check: ทุกขั้นตอนต้องมี fallback action ที่ทำได้จริงโดยไม่ต้องใช้ AI" > deliverables/workflow-basics-v2.md</code></pre>
+
+				<p class="slide-label">Output ที่คาดหวัง</p>
+				<table class="cmd-table">
+					<thead><tr><th>ขั้นตอน</th><th>Input</th><th>Output</th><th>Quality Check</th><th>Fallback</th></tr></thead>
+					<tbody>
+						<tr><td>1. รวบรวมข้อมูล</td><td>ข้อมูลดิบจากทีม</td><td>data summary</td><td>ครบทุก KPI?</td><td>ใช้ template เดิม</td></tr>
+						<tr><td>2. วิเคราะห์ trend</td><td>data summary</td><td>3 key insights</td><td>มีตัวเลขอ้างอิง?</td><td>เปรียบเทียบสัปดาห์ก่อน</td></tr>
+						<tr><td colspan="5" style="text-align:center;color:var(--muted,#5d715d)">... ต่อจนครบ 5 ขั้นตอน</td></tr>
+					</tbody>
+				</table>
+
+				<p class="slide-label" style="margin-top:14px">Success criteria</p>
+				<ul>
+					<li>มีอย่างน้อย 5 ขั้นตอน พร้อม quality check + fallback ทุกขั้น</li>
+					<li>beginner สามารถทำแต่ละขั้นตอนเสร็จได้ภายใน 10 นาที</li>
+				</ul>
+				<p class="muted-note">กด <kbd>L</kbd> เพื่อเปิด Lab panel สำหรับ copy-ready commands</p>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="CLI Core" data-time="5 min">
+				<h2>Module B: Gemini CLI Core</h2>
+				<p class="loop-caption">Gemini CLI มี 2 โหมดหลัก — Interactive REPL สำหรับทดลองและ iterate และ One-shot mode สำหรับ automate งานใน script</p>
+
+				<ul>
+					<li><strong>Interactive REPL</strong> — พิมพ์ <code>gemini</code> เพื่อเข้าสู่โหมดสนทนา เหมาะสำหรับ iterate prompt หลายรอบและทดสอบ context injection</li>
+					<li><strong>One-shot mode</strong> — ใช้ <code>-p "..."</code> เพื่อส่ง prompt เดี่ยวและรับผลลัพธ์ทันที เหมาะสำหรับใช้ใน shell script และ pipeline</li>
+				</ul>
+				<pre><code>gemini -p "Summarize top capabilities for beginners"</code></pre>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="CLI Flags" data-time="5 min">
+				<h2>Essential CLI Flags</h2>
+				<table class="cmd-table">
+					<thead><tr><th>Command</th><th>What it does</th></tr></thead>
+					<tbody>
+						<tr><td><code>gemini</code></td><td>Start interactive REPL mode</td></tr>
+						<tr><td><code>gemini -p "..."</code></td><td>One-shot prompt, exits after</td></tr>
+						<tr><td><code>gemini -p "..." &gt; out.md</code></td><td>Save output to file</td></tr>
+						<tr><td><code>gemini -p "@file.md ..."</code></td><td>Inject file as context</td></tr>
+						<tr><td><code>cat data.csv | gemini -p "..."</code></td><td>Pipe content in</td></tr>
+						<tr><td><code>gemini --model gemini-2.0-flash -p "..."</code></td><td>Specify model</td></tr>
+						<tr><td><code>gemini --help</code></td><td>List all flags</td></tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Slash Commands" data-time="5 min">
+				<h2>Slash Commands (Interactive Mode)</h2>
+				<p class="slide-label">Phase 1 — Basics</p>
+				<table class="cmd-table">
+					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
+					<tbody>
+						<tr><td><code>/help</code></td><td>Discover everything available</td></tr>
+						<tr><td><code>/about</code></td><td>Verify your version</td></tr>
+						<tr><td><code>/clear</code></td><td>Clean up the screen</td></tr>
+						<tr><td><code>/quit</code></td><td>Exit cleanly</td></tr>
+					</tbody>
+				</table>
+				<p class="slide-label" style="margin-top:12px">Phase 2 — Session Management</p>
+				<table class="cmd-table">
+					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
+					<tbody>
+						<tr><td><code>/reset</code></td><td>Fresh context when model is confused</td></tr>
+						<tr><td><code>/compress</code></td><td>Save context on long sessions</td></tr>
+						<tr><td><code>/history</code></td><td>Review what was said</td></tr>
+						<tr><td><code>/stats</code></td><td>See token usage</td></tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Slash Commands Power" data-time="4 min">
+				<h2>Slash Commands — Power Basics</h2>
+				<p class="slide-label">Phase 3 — Power User</p>
+				<table class="cmd-table">
+					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
+					<tbody>
+						<tr><td><code>/model gemini-2.0-flash</code></td><td>Switch to faster model mid-session</td></tr>
+						<tr><td><code>/editor</code></td><td>Write complex prompts in VS Code / vim</td></tr>
+						<tr><td><code>/memory add &lt;text&gt;</code></td><td>Remember preferences across sessions</td></tr>
+						<tr><td><code>/memory show</code></td><td>View saved memory</td></tr>
+						<tr><td><code>/chat new</code></td><td>Start a named session</td></tr>
+						<tr><td><code>/chat resume &lt;name&gt;</code></td><td>Pick up a saved session</td></tr>
+					</tbody>
+				</table>
+				<p class="muted-note">Skip for now: <code>/mcp</code>, <code>/tools</code>, <code>/theme</code>, <code>/bug</code></p>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Context Injection" data-time="5 min">
+				<h2>Context Injection</h2>
+				<pre><code>gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, next actions"</code></pre>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Lab B0: Interactive Mode" data-time="10 min">
+				<h2>Lab B0: Interactive Mode &amp; Slash Commands</h2>
+				<p class="slide-label">Objective</p>
+				<p>Explore the REPL, manage a session, and practice key slash commands before running any file-based labs.</p>
+				<ol>
+					<li>Enter <code>gemini</code> → run <code>/about</code> and <code>/help</code></li>
+					<li>Have a 2-turn conversation → check <code>/history</code> and <code>/stats</code></li>
+					<li>Run <code>/compress</code> → compare token count before/after</li>
+					<li>Run <code>/reset</code> → switch model with <code>/model gemini-2.0-flash</code></li>
+					<li>Confirm new model responds → <code>/quit</code></li>
+				</ol>
+				<p class="muted-note">Press <kbd>L</kbd> to open the Lab panel for copy-ready commands and checklist.</p>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Troubleshooting" data-time="3 min">
+				<h2>Top 5 Errors &amp; Fixes</h2>
+				<table class="cmd-table">
+					<thead><tr><th>Error</th><th>Fix</th></tr></thead>
+					<tbody>
+						<tr><td>Auth fails / not logged in</td><td>Run <code>gemini auth login</code> again</td></tr>
+						<tr><td>Output is generic / vague</td><td>Add role + constraints + output format to prompt</td></tr>
+						<tr><td><code>@file.md</code> not found</td><td>Check path is relative to where you run the command</td></tr>
+						<tr><td>Context too long / confused</td><td>Run <code>/compress</code> then <code>/reset</code></td></tr>
+						<tr><td>Output cuts off mid-response</td><td>Ask to continue: <em>"continue from where you stopped"</em></td></tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section class="slide" data-module="Module B" data-title="Hands-on A+B" data-time="3 min">
+				<h2>Hands-on A + B</h2>
+				<p class="muted-note" style="margin-bottom:12px">นำทักษะจาก Module A และ B มาใช้จริงในสองงานนี้ ผลลัพธ์ที่ได้จะเป็นส่วนหนึ่งของ Capstone portfolio</p>
+				<ul>
+					<li><strong>Workflow design artifact</strong> — ไฟล์ <code>workflow-basics-v2.md</code> ที่มีอย่างน้อย 5 ขั้นตอน พร้อม quality check และ fallback action ครบทุกขั้น ต้องให้ beginner ทำตามได้ใน 10 นาทีต่อขั้น</li>
+					<li><strong>Project audit action plan</strong> — วิเคราะห์ project หรืองานจริงของคุณด้วย Gemini CLI และสร้าง action plan ที่ระบุปัญหา, owner, deadline, และ success criteria ที่ชัดเจน</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module C" data-title="Content Automation" data-time="4 min">
+				<h2>Module C: Content Automation</h2>
+				<p class="muted-note" style="margin-bottom:12px">แทนที่จะเขียน content แยกทีละช่องทาง เราจะสร้าง brief เดียวแล้วให้ Agent แปลงออกมาเป็นหลาย format พร้อมกัน</p>
+				<p class="big">One brief → many channels</p>
+				<ul>
+					<li><strong>Brief ที่ดี</strong> — ระบุ product/service, target audience, unique value proposition, และ CTA ที่ชัดเจน เพื่อให้ Agent สร้าง content ที่ consistent ทุกช่องทาง</li>
+					<li><strong>Multi-channel output</strong> — จาก brief เดียว สร้างได้ทั้ง social caption, email draft, landing page copy ทั้งภาษาไทยและอังกฤษในคำสั่งเดียว</li>
+					<li><strong>Version control</strong> — บันทึกเป็น <code>content-pack.md</code> และ <code>content-pack-v2.md</code> เพื่อ track การปรับปรุงและเปรียบเทียบผลลัพธ์</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module C" data-title="Quality Checklist" data-time="3 min">
+				<h2>Content Quality Checklist</h2>
+				<p class="muted-note" style="margin-bottom:12px">ใช้ checklist นี้ใน Validate step ของ Agent Loop เพื่อตรวจสอบ content ก่อน publish ทุกครั้ง</p>
+				<ul>
+					<li><strong>Message consistency</strong> — core message และ tone เหมือนกันทุกช่องทาง ไม่มีข้อมูลขัดแย้งกันระหว่าง social, email, และ landing page</li>
+					<li><strong>Audience match</strong> — ภาษาและระดับรายละเอียดเหมาะกับกลุ่มเป้าหมาย เช่น technical terms สำหรับ developer แต่ plain language สำหรับ general public</li>
+					<li><strong>Conversion clarity</strong> — CTA ชัดเจน มีเส้นตายหรือ urgency และผู้อ่านรู้ทันทีว่าต้องทำอะไรต่อไป</li>
+					<li><strong>No unsupported claims</strong> — ทุก claim ที่มีตัวเลขหรือสถิติต้องอ้างอิงได้ ห้าม Agent สร้างข้อมูลที่ไม่มีในต้นฉบับ brief</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module C" data-title="Lab C: Content Pack" data-time="20 min">
+				<h2>Lab C: Automated Content Pack</h2>
+				<p class="slide-label">Objective</p>
+				<p>From one product brief, generate social caption, email draft, and landing page hero copy in Thai + English.</p>
+				<ol>
+					<li>Run the baseline prompt — observe what's missing</li>
+					<li>Run the improved prompt with full brief → save to <code>content-pack.md</code></li>
+					<li>Revise for stronger CTA → save as <code>content-pack-v2.md</code></li>
+					<li>Check: are all 3 channels present? Is the CTA time-bound?</li>
+				</ol>
+				<p class="slide-label" style="margin-top:14px">Success criteria</p>
+				<ul>
+					<li>Social ≤80 words, email 120–180 words, landing hero with CTA</li>
+					<li>Thai + English versions present, consistent core message</li>
+				</ul>
+				<p class="muted-note">Press <kbd>L</kbd> for copy-ready commands and prompts.</p>
+			</section>
+
+			<section class="slide" data-module="Module D" data-title="Web App Pattern" data-time="4 min">
+				<h2>Module D: Web App Integration Pattern</h2>
+				<p class="muted-note" style="margin-bottom:12px">รูปแบบการเชื่อม AI เข้ากับ web app ที่ปลอดภัย — API key อยู่ server-side เสมอ ไม่เคย expose ไปที่ browser</p>
+				<p class="big">Frontend → Backend → AI → Structured JSON</p>
+				<ul>
+					<li><strong>Frontend</strong> — รับ input จากผู้ใช้และส่ง request ไปที่ backend ของเราเอง ไม่เคย call AI API โดยตรงจาก browser เพื่อป้องกัน API key ถูกขโมย</li>
+					<li><strong>Backend</strong> — Express server รับ request, validate input, แล้ว call Gemini API พร้อม API key ที่เก็บไว้ใน environment variable</li>
+					<li><strong>Structured JSON</strong> — ระบุใน prompt ให้ AI ตอบกลับเป็น JSON เสมอ เพื่อให้ฝั่ง frontend parse และแสดงผลได้อย่างน่าเชื่อถือ</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module D" data-title="Guardrails" data-time="4 min">
+				<h2>Integration Guardrails</h2>
+				<p class="muted-note" style="margin-bottom:12px">3 กฎนี้ต้องปฏิบัติทุกครั้งที่นำ AI เข้า production — ละเลยข้อใดข้อหนึ่งอาจทำให้ app พัง หรือ API key ถูกขโมย</p>
+				<ul>
+					<li><strong>Keep keys server-side</strong> — เก็บ <code>GEMINI_API_KEY</code> ใน <code>.env</code> และโหลดผ่าน <code>process.env</code> เท่านั้น ห้าม hardcode หรือ commit ลง git repository</li>
+					<li><strong>Add timeout handling</strong> — ตั้ง timeout สำหรับทุก AI call (แนะนำ 30 วินาที) และ handle กรณีที่ request ค้างหรือ model ไม่ตอบสนองด้วย fallback message</li>
+					<li><strong>Return readable errors</strong> — เมื่อเกิด error ส่ง message ที่ user เข้าใจได้กลับไป ไม่ใช่ stack trace หรือ raw API error ที่อาจเปิดเผย internal structure</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module D" data-title="Lab D: Web App Integration" data-time="20 min">
+				<h2>Lab D: Web App AI Integration</h2>
+				<p class="slide-label">Objective</p>
+				<p>Start an Express server, call the AI endpoint, and validate both the success and error response paths.</p>
+				<ol>
+					<li>Navigate to <code>materials/webapp-starter</code> and run <code>npm install &amp;&amp; npm start</code></li>
+					<li>In a new terminal, POST to <code>/api/generate</code> with a valid payload → save response</li>
+					<li>POST with an invalid payload → observe error message</li>
+					<li>Verify <code>api-response.json</code> contains <code>ok: true</code> and a result object</li>
+				</ol>
+				<p class="slide-label" style="margin-top:14px">Success criteria</p>
+				<ul>
+					<li>Server starts on port 3000 without errors</li>
+					<li>Can demonstrate both success and error path behavior</li>
+				</ul>
+				<p class="muted-note">Press <kbd>L</kbd> for copy-ready curl commands and checklist.</p>
+			</section>
+
+			<section class="slide" data-module="Module E" data-title="Data Insight Pattern" data-time="4 min">
+				<h2>Module E: Data Insight Pattern</h2>
+				<p class="muted-note" style="margin-bottom:12px">แทนที่จะอ่าน CSV ด้วยตาเปล่า เราจะใช้ Agent วิเคราะห์และสรุป insight ที่ผู้บริหารตัดสินใจได้ทันที</p>
+				<p class="big">Raw CSV → trends → anomalies → recommendations</p>
+				<ul>
+					<li><strong>Trends</strong> — Agent หาแนวโน้มที่เกิดขึ้นต่อเนื่อง เช่น ยอดขายเพิ่มขึ้นทุกเดือน หรือ support ticket ลดลงหลัง product update</li>
+					<li><strong>Anomalies</strong> — ระบุจุดผิดปกติที่ต้องตรวจสอบ เช่น ยอดขาย drop 40% ในสัปดาห์ที่ 3 หรือ ticket volume พุ่งสูงผิดปกติในหมวดหมู่ใดหมวดหมู่หนึ่ง</li>
+					<li><strong>Recommendations</strong> — สรุปเป็น action items ที่ระบุ owner, timeline, และ KPI วัดผลได้ชัดเจน ไม่ใช่แค่ observation ลอยๆ</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module E" data-title="Manager Ready" data-time="3 min">
+				<h2>Manager-Ready Reporting</h2>
+				<p class="muted-note" style="margin-bottom:12px">รายงานที่ดีต้องทำให้ผู้บริหารตัดสินใจได้ภายใน 2 นาที — ใช้ 3 องค์ประกอบนี้เป็น output contract ใน prompt</p>
+				<ul>
+					<li><strong>Concise summary</strong> — สรุปสถานการณ์รวมใน 3–5 bullet ไม่เกิน 2 บรรทัดต่อข้อ เน้น what happened และ why it matters</li>
+					<li><strong>Quant-backed findings</strong> — ทุก finding ต้องอ้างอิงตัวเลขจาก data จริง เช่น "ยอดขาย Q1 เพิ่มขึ้น 23% YoY" ไม่ใช่ "ยอดขายดีขึ้น"</li>
+					<li><strong>Prioritized actions</strong> — เรียง action items ตามผลกระทบและความเร่งด่วน แต่ละข้อระบุ owner, deadline, และ KPI ที่วัดความสำเร็จได้</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Module E" data-title="Lab E: Data Insight" data-time="15 min">
+				<h2>Lab E: Data Insight Summarization</h2>
+				<p class="slide-label">Objective</p>
+				<p>Turn raw CSV sales and support data into decision-ready executive insights with quant-backed findings.</p>
+				<ol>
+					<li>Run the improved prompt referencing both CSV files → save to <code>insight-report.md</code></li>
+					<li>Verify findings cite actual numbers from the data</li>
+					<li>Reformat into executive summary → save as <code>insight-report-v2.md</code></li>
+					<li>Check: does v2 have 5-bullet summary + risk table + next-30-day actions?</li>
+				</ol>
+				<p class="slide-label" style="margin-top:14px">Success criteria</p>
+				<ul>
+					<li>Every insight references a specific number from the CSV</li>
+					<li>Recommendations have owner + timeline + KPI</li>
+				</ul>
+				<p class="muted-note">Press <kbd>L</kbd> for copy-ready commands and checklist.</p>
+			</section>
+
+			<section class="slide" data-module="Capstone" data-title="Capstone Brief" data-time="3 min">
+				<h2>Capstone Brief</h2>
+				<p class="muted-note" style="margin-bottom:12px">Capstone ที่ดีคือ workflow ที่ทีมเอาไปใช้จริงได้ทันที — เตรียม 4 องค์ประกอบนี้ก่อนเริ่ม</p>
+				<ol>
+					<li><strong>Problem statement</strong> — ระบุปัญหาที่ชัดเจนและวัดได้ เช่น "ทีม 5 คนใช้เวลา 2 ชั่วโมงต่อสัปดาห์เขียน report ด้วยมือ รูปแบบไม่สม่ำเสมอ"</li>
+					<li><strong>Prompt strategy</strong> — อธิบาย role, constraints, output contract, และ quality checks ที่ใช้ใน prompt พร้อมเหตุผลที่เลือก</li>
+					<li><strong>Output artifact</strong> — ผลลัพธ์ที่จับต้องได้ เช่น workflow table, content pack, หรือ insight report ที่บันทึกไว้ใน deliverables folder</li>
+					<li><strong>Validation approach</strong> — วิธีที่ใช้ตรวจสอบว่า output ตรงตาม success criteria ใช้ rubric, self-review prompt, หรือ peer review</li>
+				</ol>
+			</section>
+
+			<section class="slide" data-module="Capstone" data-title="Rubric" data-time="3 min">
+				<h2>Evaluation Rubric</h2>
+				<table class="cmd-table">
+					<thead><tr><th>Dimension</th><th>1 — Weak</th><th>3 — Good</th><th>5 — Excellent</th></tr></thead>
+					<tbody>
+						<tr><td>Problem framing</td><td>Unclear</td><td>Specific task</td><td>Clear + scoped + measurable</td></tr>
+						<tr><td>Prompt quality</td><td>Generic</td><td>Has role + format</td><td>Role + constraints + output contract</td></tr>
+						<tr><td>Output utility</td><td>Not reusable</td><td>Useful with edits</td><td>Immediately reusable by team</td></tr>
+						<tr><td>Safety awareness</td><td>Not considered</td><td>Mentioned risk</td><td>Validation + fallback defined</td></tr>
+						<tr><td>Communication</td><td>Hard to follow</td><td>Clear structure</td><td>Concise, compelling, reproducible</td></tr>
+					</tbody>
+				</table>
+				<p class="muted-note">Target score: 12 / 25 to pass &nbsp;|&nbsp; 20+ = team-ready</p>
+			</section>
+
+			<section class="slide" data-module="Capstone" data-title="Worked Example" data-time="3 min">
+				<h2>Capstone Worked Example</h2>
+				<p class="slide-label">Problem statement</p>
+				<p>Our team spends 2 hours every Friday writing weekly reports manually with inconsistent format.</p>
+				<p class="slide-label">Prompt used</p>
+				<pre><code>gemini -p "You are a workflow coach. Design a 5-step AI-assisted workflow for weekly report writing for a 5-person analyst team. Each step: goal, input, output, quality check, risk, fallback. Output as markdown table." > deliverables/TEAM_ALPHA/capstone-output.md</code></pre>
+				<p class="slide-label">Validation approach</p>
+				<ul>
+					<li>Each step is executable by a junior analyst in under 10 minutes</li>
+					<li>Quality check and fallback present for every step</li>
+					<li>Ran self-review prompt → scored 22 / 25</li>
+				</ul>
+			</section>
+
+			<section class="slide" data-module="Capstone" data-title="Next Steps" data-time="2 min">
+				<h2>Next Steps</h2>
+				<p class="muted-note" style="margin-bottom:12px">เมื่อจบ workshop นี้แล้ว ขั้นตอนต่อไปเพื่อนำ AI Agent เข้าสู่การทำงานจริงของทีม</p>
+				<ul>
+					<li><strong>Build team prompt library</strong> — รวบรวม prompt ที่ใช้ได้ผลดีจาก workshop นี้ไว้ใน shared folder พร้อม documentation ว่าใช้เมื่อไหร่และ customize อย่างไร</li>
+					<li><strong>Standardize workflow templates</strong> — แปลง workflow ที่สร้างใน Capstone ให้เป็น template ที่ทีมใหม่ใช้ได้ทันที พร้อม quality checklist และ fallback plan</li>
+					<li><strong>Expand to advanced integrations</strong> — ต่อยอดไปสู่ MCP tools, multi-agent orchestration, หรือการเชื่อม Gemini API เข้ากับ internal system ของ organization</li>
+				</ul>
+			</section>
+		</main>
+
+		<!-- Lab Sidebar -->
+		<aside id="labPanel" class="lab-panel" aria-hidden="true">
+			<div class="lab-panel-header">
+				<div class="lab-panel-tabs" role="tablist">
+					<button class="tab-btn active" type="button" data-tab="commands" role="tab">Commands</button>
+					<button class="tab-btn" type="button" data-tab="prompts" role="tab">Prompts</button>
+				</div>
+				<button id="labPanelClose" type="button" class="lab-panel-close" aria-label="Close lab panel">✕</button>
+			</div>
+			<div class="lab-panel-body">
+				<p class="lab-panel-objective" id="labPanelObjective"></p>
+				<div id="labTabCommands" class="lab-tab-content active">
+					<div id="labCommandsList" class="lab-commands-list"></div>
+					<ul id="labChecklist" class="lab-checklist"></ul>
+				</div>
+				<div id="labTabPrompts" class="lab-tab-content">
+					<div class="prompt-pair">
+						<div class="prompt-block">
+							<div class="prompt-block-header">
+								<span>Baseline (avoid)</span>
+								<button class="copy-btn" type="button" id="copyBaselineBtn">Copy</button>
+							</div>
+							<pre id="labPromptBaseline"></pre>
+						</div>
+						<div class="prompt-block prompt-block--improved">
+							<div class="prompt-block-header">
+								<span>Improved ✓</span>
+								<button class="copy-btn" type="button" id="copyImprovedBtn">Copy</button>
+							</div>
+							<pre id="labPromptImproved"></pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</aside>
+		</div><!-- /.workspace -->
+
+		<script src="app.js"></script>
+	</body>
+</html>
