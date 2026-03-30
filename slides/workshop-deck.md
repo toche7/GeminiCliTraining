@@ -220,13 +220,14 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 
 ## Slide 13 - Content Automation (4 min)
 ### On Slide
-One brief -> many channels
-One REPL session -> iterative refinement
-Consistency + tone control + CTA alignment
+One brief -> 3 outputs
+One REPL session -> draft -> revise -> self-check
+Thai + English with consistent CTA
 
 ### Speaker Notes
-- TH: เปิด REPL ครั้งเดียว แล้วใช้ brief เดิมกับ follow-up prompts เพื่อปรับ content ต่อเนื่อง
-- EN: Reusability plus iteration is the key productivity gain.
+- TH: ใน lab นี้ learner ต้องทำ 3 channel จาก brief เดียว: social caption, email draft, และ landing hero copy ทั้งภาษาไทยและอังกฤษ
+- EN: The lab goal is specific: one brief, three channel outputs, same REPL session, then a stronger second version plus one final self-check.
+- TH: baseline prompt ใช้เพื่อเปรียบเทียบคุณภาพ prompt ถ้าเวลาน้อยสามารถข้ามได้ แต่ improved prompt และ revision prompt ต้องทำ
 
 ### Live Demo
 ```bash
@@ -239,11 +240,21 @@ From this brief, create Thai+English outputs:
 1) social caption (<=80 words)
 2) email draft (120-180 words)
 3) landing hero copy (headline + subheadline + CTA)
+Use clear section headings for Social, Email, and Hero in both languages.
+Brief:
+- Product: AI workshop for junior teams
+- Audience: team leads and new analysts
+- Value: faster reporting with reliable AI workflows
+- Tone: practical and confident
+- CTA: register this week
 Keep message consistent and avoid unsupported claims.
 ```
 
 ```text
-Revise the previous draft with a stronger CTA and clearer differentiation from generic AI training.
+Revise the previous content pack.
+Make the CTA stronger and more specific.
+Differentiate this workshop from generic AI training.
+Keep the same 3 channels and keep Thai + English output.
 ```
 
 ### Transition
@@ -252,8 +263,8 @@ Revise the previous draft with a stronger CTA and clearer differentiation from g
 ## Slide 14 - Content Quality Checklist (3 min)
 ### On Slide
 - Message consistency
-- Audience match
-- Conversion clarity
+- Audience fit: team leads + new analysts
+- CTA = action verb + deadline + outcome
 - No unsupported claims
 
 ### Audience Checkpoint

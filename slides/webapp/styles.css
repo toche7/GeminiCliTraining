@@ -288,16 +288,7 @@ kbd {
 	margin-top: 20px;
 }
 
-.loop-caption {
-	margin-top: 14px;
-	font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-	color: var(--muted);
-	line-height: 1.6;
-	border-left: 3px solid var(--accent);
-	padding-left: 12px;
-}
-
-.explanation {
+.section-note {
 	margin-top: 14px;
 	font-size: clamp(1.05rem, 1.5vw, 1.3rem);
 	color: var(--muted);

@@ -23,6 +23,7 @@ const copyImprovedBtn  = document.getElementById('copyImprovedBtn');
 const tabBtns          = Array.from(document.querySelectorAll('.tab-btn'));
 
 // ─── Lab Data ──────────────────────────────────────────────────────────────
+
 const labData = {
 	'Module A|Lab A: Workflow Design': {
 		title: 'Lab A: AI Workflow Design',
@@ -105,54 +106,32 @@ const labData = {
 		},
 	},
 
-	'Module C|Content Automation': {
-		title: 'Lab C: Automated Content Pack',
-		objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
-		commands: [
-			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
-			{ label: 'Prompt 1 — Baseline prompt', code: 'Write social post and email for my workshop.' },
-			{ label: 'Prompt 2 — Generate structured content pack', code: 'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nBrief:\n- Product: AI workshop for junior teams\n- Audience: team leads and new analysts\n- Value: faster reporting with reliable AI workflows\n- Tone: practical and confident\n- CTA: register this week\nKeep message consistent and avoid unsupported claims.' },
-			{ label: 'Prompt 3 — Strengthen CTA and differentiation', code: 'Revise the previous content pack.\nMake the CTA stronger and more specific.\nDifferentiate this workshop from generic AI training.\nKeep the same 3 channels and keep Thai + English output.' },
-			{ label: 'Prompt 4 — Self-check the latest draft', code: 'Review the latest content pack against this checklist:\n- message consistency across all 3 channels\n- audience fit for team leads and new analysts\n- CTA includes action verb, deadline, and outcome\n- no unsupported claims\nReturn pass/fail with one fix per item.' },
-			{ label: 'Step 5 — Exit REPL', code: '/quit' },
-		],
-		checklist: [
-			'content-pack.md saved from the first strong REPL draft',
-			'content-pack-v2.md saved from the revised REPL draft',
-			'All 3 channels are present (social, email, landing)',
-			'Thai and English versions present',
-			'CTA contains action verb + deadline + outcome',
-			'v2 has stronger differentiation from generic AI training',
-		],
-		prompts: {
-			baseline: 'Write social post and email for my workshop.',
-			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nKeep message consistent and avoid unsupported claims.',
-		},
+	'Module C|Content Automation':  
+	{
+	title: 'Lab C: Automated Content Pack',
+	objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
+	commands: [
+		{ label: 'Step 1 — Enter REPL', code: 'gemini' },
+		{ label: 'Prompt 1 — Optional baseline prompt', code: 'Write social post and email for my workshop.' },
+		{ label: 'Prompt 2 — Generate content-pack.md draft', code: 'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nBrief:\n- Product: AI workshop for junior teams\n- Audience: team leads and new analysts\n- Value: faster reporting with reliable AI workflows\n- Tone: practical and confident\n- CTA: register this week\nKeep message consistent and avoid unsupported claims.' },
+		{ label: 'Prompt 3 — Save to content-pack.md', code: 'Save the previous content as content-pack.md.' },
+		{ label: 'Prompt 4 — Revise into content-pack-v2.md', code: 'Read the previous content pack.\nMake the CTA stronger and more specific.\nDifferentiate this workshop from generic AI training.\nKeep the same 3 channels and keep Thai + English output.' },
+		{ label: 'Prompt 5 — Final self-check before saving', code: 'Review the latest content pack against this checklist:\n- message consistency across all 3 channels\n- audience fit for team leads and new analysts\n- CTA includes action verb, deadline, and outcome\n- no unsupported claims\nReturn pass/fail with one fix per item.' },
+		{ label: 'Prompt 6 — Save to content-pack-v2.md', code: 'Save the previous content as content-pack-v2.md.' },
+		{ label: 'Step 7 — Exit REPL after both files are saved', code: '/quit' },
+	],
+	checklist: [
+		'content-pack.md saved from the first strong REPL draft',
+		'content-pack-v2.md saved from the revised REPL draft',
+		'All 3 channels are present (social, email, landing)',
+		'Thai and English versions present',
+		'CTA contains action verb + deadline + outcome',
+		'v2 has stronger differentiation from generic AI training',
+	],
+	prompts: {
+		baseline: 'Write social post and email for my workshop.',
+		improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nKeep message consistent and avoid unsupported claims.',
 	},
-
-	'Module C|Lab C: Content Pack': {
-		title: 'Lab C: Automated Content Pack',
-		objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
-		commands: [
-			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
-			{ label: 'Prompt 1 — Baseline prompt', code: 'Write social post and email for my workshop.' },
-			{ label: 'Prompt 2 — Generate structured content pack', code: 'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nBrief:\n- Product: AI workshop for junior teams\n- Audience: team leads and new analysts\n- Value: faster reporting with reliable AI workflows\n- Tone: practical and confident\n- CTA: register this week\nKeep message consistent and avoid unsupported claims.' },
-			{ label: 'Prompt 3 — Strengthen CTA and differentiation', code: 'Revise the previous content pack.\nMake the CTA stronger and more specific.\nDifferentiate this workshop from generic AI training.\nKeep the same 3 channels and keep Thai + English output.' },
-			{ label: 'Prompt 4 — Self-check the latest draft', code: 'Review the latest content pack against this checklist:\n- message consistency across all 3 channels\n- audience fit for team leads and new analysts\n- CTA includes action verb, deadline, and outcome\n- no unsupported claims\nReturn pass/fail with one fix per item.' },
-			{ label: 'Step 5 — Exit REPL', code: '/quit' },
-		],
-		checklist: [
-			'content-pack.md saved from the first strong REPL draft',
-			'content-pack-v2.md saved from the revised REPL draft',
-			'All 3 channels are present (social, email, landing)',
-			'Thai and English versions present',
-			'CTA contains action verb + deadline + outcome',
-			'v2 has stronger differentiation from generic AI training',
-		],
-		prompts: {
-			baseline: 'Write social post and email for my workshop.',
-			improved:  'You are a senior content strategist.\nFrom this brief, create Thai+English outputs:\n1) social caption (<=80 words)\n2) email draft (120-180 words)\n3) landing hero copy (headline + subheadline + CTA)\nUse clear section headings for Social, Email, and Hero in both languages.\nKeep message consistent and avoid unsupported claims.',
-		},
 	},
 
 	'Module D|Web App Pattern': {
