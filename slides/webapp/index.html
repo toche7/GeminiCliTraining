@@ -266,6 +266,83 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 				<p class="muted-note">กด <kbd>L</kbd> เพื่อเปิด Lab panel สำหรับ copy-ready commands</p>
 			</section>
 
+			<section class="slide" data-module="Module B" data-title="Shell Basics" data-time="5 min">
+				<h2>Shell Basics — Mac &amp; Windows</h2>
+				<p class="section-note">ก่อนใช้ Gemini CLI ต้องสั่งงาน terminal ได้ก่อน — นี่คือคำสั่งที่ใช้บ่อยที่สุดบน macOS/Linux (zsh/bash) และ Windows (PowerShell)</p>
+				<table class="cmd-table">
+					<thead>
+						<tr>
+							<th>Action</th>
+							<th>macOS / Linux</th>
+							<th>Windows (PowerShell)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Show current directory</td>
+							<td><code>pwd</code></td>
+							<td><code>pwd</code></td>
+						</tr>
+						<tr>
+							<td>List files</td>
+							<td><code>ls</code></td>
+							<td><code>ls</code> or <code>dir</code></td>
+						</tr>
+						<tr>
+							<td>Change directory</td>
+							<td><code>cd folder/</code></td>
+							<td><code>cd folder\</code></td>
+						</tr>
+						<tr>
+							<td>Go up one level</td>
+							<td><code>cd ..</code></td>
+							<td><code>cd ..</code></td>
+						</tr>
+						<tr>
+							<td>Create folder</td>
+							<td><code>mkdir foldername</code></td>
+							<td><code>mkdir foldername</code></td>
+						</tr>
+						<tr>
+							<td>Create nested folders</td>
+							<td><code>mkdir -p a/b/c</code></td>
+							<td><code>New-Item -ItemType Directory -Force a\b\c</code></td>
+						</tr>
+						<tr>
+							<td>Print file contents</td>
+							<td><code>cat file.md</code></td>
+							<td><code>Get-Content file.md</code></td>
+						</tr>
+						<tr>
+							<td>Save output to file</td>
+							<td><code>command &gt; out.md</code></td>
+							<td><code>command | Out-File out.md</code></td>
+						</tr>
+						<tr>
+							<td>Pipe output to next command</td>
+							<td><code>cat file.csv | gemini -p "..."</code></td>
+							<td><code>Get-Content file.csv | gemini -p "..."</code></td>
+						</tr>
+						<tr>
+							<td>Clear the screen</td>
+							<td><code>clear</code></td>
+							<td><code>cls</code></td>
+						</tr>
+						<tr>
+							<td>Check if command exists</td>
+							<td><code>which gemini</code></td>
+							<td><code>Get-Command gemini</code></td>
+						</tr>
+						<tr>
+							<td>Show environment variable</td>
+							<td><code>echo $GEMINI_API_KEY</code></td>
+							<td><code>echo $env:GEMINI_API_KEY</code></td>
+						</tr>
+					</tbody>
+				</table>
+				<p class="muted-note">💡 Windows users: use <strong>PowerShell</strong>, not Command Prompt (cmd) — Gemini CLI works best there</p>
+			</section>
+
 			<section class="slide" data-module="Module B" data-title="CLI Core" data-time="5 min">
 				<h2>Module B: Gemini CLI Core</h2>
 				<p class="section-note">Gemini CLI ใช้งานได้ทั้งแบบ REPL และ one-shot พร้อมเครื่องมือจัดการ session, context, และ shell mode ในหน้าจอเดียว</p>
