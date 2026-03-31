@@ -55,17 +55,24 @@ Participants can:
 ### 0:45-1:25 | Module B: Agent CLI - Gemini CLI in Practice (40 min)
 - Topics:
   - Core usage:
-    - Interactive mode
-    - One-shot headless mode
-    - Resume sessions
+    - Interactive mode (`gemini`)
+    - One-shot headless mode (`gemini -p "..."`)
+    - Session management: list checkpoints with `/chat list`, jump back with `/rewind`
+    - Clear screen and history with `/clear`; compress long context with `/compress`
     - Optional project bootstrap with `/init`
   - Context input:
-    - Include file/folder context
+    - Add file/folder context with `@file` or `@folder` syntax
     - Test repo guidance with `gemini.md`
     - Compare implicit vs explicit `@gemini.md` usage
     - Ask for summaries and action lists
   - Shell workflow:
+    - Run shell commands inside REPL with `!command` (e.g., `!npm run start`)
     - Build command + AI explanation pattern
+  - Key shortcuts:
+    - Ctrl+P / Ctrl+N — cycle prompt history
+    - Ctrl+Enter — new line in input
+    - Ctrl+L — clear screen
+    - Ctrl+C — quit application
 - Demo flow:
   - Run `/init` for first-time repo bootstrap (optional)
   - Analyze a project folder
@@ -108,31 +115,32 @@ Participants can:
 ### 2:40-3:20 | Module D + E (40 min)
 
 #### D: 🌐 สร้าง Web Application เชื่อมต่อ AI (20 min)
-- Integration pattern:
-  - Frontend input form
-  - Backend endpoint
-  - AI call
-  - Structured response
+- Integration pattern (from Lab C to website build):
+  - Use landing hero from `content-pack-v2.md`
+  - Generate HTML/CSS with Gemini CLI
+  - Run website locally via starter app
+  - Iterate one revision prompt for stronger UX/copy
 - Explain:
   - API key handling and server-side safety
-  - error handling and timeout fallback
+  - error handling for missing file/path and invalid payload
 
 #### E: 📊 วิเคราะห์ข้อมูลและสรุป Insight ด้วย AI (20 min)
-- Data workflow:
-  - load CSV
-  - summarize trend
-  - identify anomaly
-  - propose actions
+- Optimization workflow (using outputs from D):
+  - read `api-response.json` and optional mini metrics
+  - evaluate message clarity and CTA strength
+  - identify weak conversion step and likely causes
+  - propose prioritized website/content improvements
 - Demo:
-  - sales + support tickets -> executive summary
+  - Lab D response + metrics -> optimization summary
 
 ### 3:20-3:35 | Labs D + E (15 min)
 - Lab D mini-task:
-  - hit local endpoint and get generated response
+  - generate simple landing page using Gemini CLI from Lab C hero
+  - run and preview the page locally
 - Lab E mini-task:
-  - generate insight report from provided CSVs
+  - analyze Lab D output and produce optimization actions
 - Deliverables:
-  - api-response.json
+  - landing-page-v1.html
   - insight-report.md
 
 ### 3:35-3:50 | Capstone Showcase (15 min)

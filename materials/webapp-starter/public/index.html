@@ -62,6 +62,41 @@
         margin: 10px 0 14px;
       }
 
+      input[type="text"] {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+        margin: 10px 0 14px;
+      }
+
+      .mode-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 8px 0;
+      }
+
+      .mode-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: var(--text);
+        background: #eef7f5;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 10px;
+      }
+
+      .hint {
+        margin-top: -6px;
+        margin-bottom: 12px;
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+
       button {
         border: none;
         background: linear-gradient(120deg, var(--primary), var(--primary-2));
@@ -98,12 +133,21 @@
       <div class="card">
         <h1>AI Web Integration Lab Starter</h1>
         <p>
-          Enter text below and call the backend endpoint. This starter returns mock
-          structured output so learners can focus on integration flow first.
+          Use either manual text or your Lab C content file. The API returns structured
+          JSON so you can render and optimize a real landing hero flow.
         </p>
 
+        <div class="mode-row" role="radiogroup" aria-label="Input mode">
+          <label class="mode-chip"><input type="radio" name="mode" value="artifact" checked> Use Lab C artifact</label>
+          <label class="mode-chip"><input type="radio" name="mode" value="manual"> Manual input</label>
+        </div>
+
+        <label for="contentPath">Lab C content path</label>
+        <input id="contentPath" type="text" value="deliverables/TEAM_ALPHA/content-pack-v2.md" />
+        <p class="hint">Example: deliverables/TEAM_ALPHA/content-pack-v2.md</p>
+
         <label for="input">Input</label>
-        <textarea id="input" placeholder="Describe your task or business context..."></textarea>
+        <textarea id="input" placeholder="Describe your task or business context..." style="display:none"></textarea>
         <button id="runBtn">Generate</button>
 
         <pre id="output">Result will appear here...</pre>
@@ -112,17 +156,37 @@
 
     <script>
       const inputEl = document.getElementById('input');
+      const contentPathEl = document.getElementById('contentPath');
       const runBtn = document.getElementById('runBtn');
       const outputEl = document.getElementById('output');
+      const modeEls = Array.from(document.querySelectorAll('input[name="mode"]'));
+
+      function selectedMode() {
+        const active = modeEls.find((el) => el.checked);
+        return active ? active.value : 'artifact';
+      }
+
+      function syncModeUI() {
+        const artifactMode = selectedMode() === 'artifact';
+        contentPathEl.style.display = artifactMode ? '' : 'none';
+        contentPathEl.previousElementSibling.style.display = artifactMode ? '' : 'none';
+        contentPathEl.nextElementSibling.style.display = artifactMode ? '' : 'none';
+        inputEl.style.display = artifactMode ? 'none' : '';
+      }
 
       async function runGenerate() {
         outputEl.textContent = 'Loading...';
 
         try {
+          const mode = selectedMode();
+          const payload = mode === 'artifact'
+            ? { contentPath: contentPathEl.value }
+            : { input: inputEl.value };
+
           const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input: inputEl.value })
+            body: JSON.stringify(payload)
           });
 
           const data = await response.json();
@@ -133,6 +197,8 @@
       }
 
       runBtn.addEventListener('click', runGenerate);
+      modeEls.forEach((el) => el.addEventListener('change', syncModeUI));
+      syncModeUI();
     </script>
   </body>
 </html>

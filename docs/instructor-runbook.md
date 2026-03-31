@@ -45,9 +45,13 @@ Operational guide for running the full 3-hour session with minimal ambiguity.
 
 ### Block 4 (2:40-3:35)
 - Module D+E and Labs D+E.
-- Key message: structured responses are easier to integrate and evaluate.
+- Key message: Module D implements Lab C content in a simple website, and Module E optimizes that website output with actionable recommendations.
 - Fallback if server issues:
-  - do live demo once and let teams submit curl output only.
+  - do live demo once and let teams submit generated `landing-page-v1.html` only.
+- Fallback if Lab C artifact missing:
+  - allow manual `input` mode in Lab D so learners can continue, then map back to artifact mode in recap.
+- Fallback if content path is invalid:
+  - provide one canonical path: `deliverables/TEAM_ALPHA/content-pack-v2.md` and rerun.
 
 ### Block 5 (3:35-4:00)
 - Capstone + rubric + closing.

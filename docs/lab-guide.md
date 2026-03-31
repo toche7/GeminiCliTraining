@@ -260,33 +260,68 @@ Note: this lab is REPL-first. Save deliverables by copying the approved REPL res
 ## Lab D: Web App AI Integration (20 min)
 
 ### Objective
-Run a minimal web endpoint and validate structured JSON output.
+Use Gemini CLI to generate a simple website from your Lab C landing hero, then run and validate it locally.
 
 ### Steps and Commands
-1. Start the web app starter.
+0. Confirm Lab C artifact exists (use v2 if available).
 ```bash
-cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining/materials/webapp-starter
+cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
+ls deliverables/TEAM_ALPHA/content-pack.md deliverables/TEAM_ALPHA/content-pack-v2.md
+```
+1. Enter REPL and generate landing page HTML from Lab C artifact.
+```bash
+cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
+gemini
+```
+Then type this prompt in REPL:
+```text
+Using @deliverables/TEAM_ALPHA/content-pack-v2.md, generate a single-file landing page HTML with embedded CSS.
+Include: hero headline, subheadline, CTA button, one trust section, and one footer.
+Keep it responsive and preserve the bilingual tone.
+Return HTML only.
+```
+After seeing the output, save it:
+```text
+/save deliverables/TEAM_ALPHA/landing-page-v1.html
+```
+2. Publish generated page to starter app and run local server.
+```bash
+cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
+cp deliverables/TEAM_ALPHA/landing-page-v1.html materials/webapp-starter/public/landing.html
+cd materials/webapp-starter
 npm install
 cp .env.example .env
 npm start
 ```
-2. In a new terminal, call API endpoint.
-```bash
-curl -s -X POST http://localhost:3000/api/generate -H "Content-Type: application/json" -d '{"input":"Summarize Q2 sales and support trends"}' > /Users/taweesaksamanchuen/Dev/GeminiCliTraining/deliverables/TEAM_ALPHA/api-response.json
+3. Optional revision—refine in the same REPL session or start a new one.
+In REPL:
+```text
+Revise @deliverables/TEAM_ALPHA/landing-page-v1.html for better readability and stronger CTA hierarchy.
+Keep output as single-file HTML and preserve bilingual tone.
 ```
-3. Test error path.
+Then save:
+```text
+/save deliverables/TEAM_ALPHA/landing-page-v2.html
+```
+When ready, exit REPL:
+```text
+/quit
+```
+4. Validate render and fallback behavior.
 ```bash
-curl -s -X POST http://localhost:3000/api/generate -H "Content-Type: application/json" -d '{"invalid":"payload"}'
+open http://localhost:3000/landing.html
 ```
 
 ### Time Gates
-- Minute 6: server running.
-- Minute 12: success response saved.
-- Minute 20: error-path behavior explained.
+- Minute 3: REPL entered and first prompt given.
+- Minute 8: HTML output reviewed and saved to file.
+- Minute 14: local site running and preview visible.
+- Minute 20: optional revision completed or quality review finalized.
 
 ### Expected Output Check
-- `api-response.json` contains `ok: true` and `result` object.
-- Error path returns readable message.
+- `landing-page-v1.html` includes headline, subheadline, and CTA from Lab C.
+- Local page loads at `/landing.html` without broken layout.
+- Optional `landing-page-v2.html` shows clear improvement in hierarchy or CTA clarity.
 
 ### Common Failures and Recovery
 - Failure: `npm start` run at repository root.
@@ -298,25 +333,26 @@ curl -s -X POST http://localhost:3000/api/generate -H "Content-Type: application
 - If many cannot start server, do shared live run and let learners only test API calls.
 
 ### Success Criteria
-- Endpoint responds with valid JSON.
-- Learner demonstrates both success and error calls.
+- Learner generated website using Gemini CLI and Lab C artifact.
+- Learner can run and preview the website locally.
+- Learner can explain one concrete change between v1 and v2.
 
 ---
 
 ## Lab E: Data Insight Summarization (15 min)
 
 ### Objective
-Turn CSV data into decision-ready insights.
+Turn Lab D website output into decision-ready optimization insights.
 
 ### Steps and Commands
-1. Generate initial insight report.
+1. Generate initial optimization report from Lab D page output.
 ```bash
 cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
-gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/support_tickets.csv. Return: top trends with numbers, anomalies with likely causes, and 3 recommendations with expected impact and confidence." > deliverables/TEAM_ALPHA/insight-report.md
+gemini -p "Analyze @deliverables/TEAM_ALPHA/landing-page-v1.html and @deliverables/TEAM_ALPHA/content-pack-v2.md. Return: 3 strengths of the landing page, 3 conversion risks, and 3 recommendations with expected impact and confidence." > deliverables/TEAM_ALPHA/insight-report.md
 ```
-2. Force executive summary format.
+2. Force executive summary format with owner and KPI.
 ```bash
-gemini -p "Revise @deliverables/TEAM_ALPHA/insight-report.md into executive format: 5 bullet summary, risk table, next-30-day actions." > deliverables/TEAM_ALPHA/insight-report-v2.md
+gemini -p "Revise @deliverables/TEAM_ALPHA/insight-report.md into executive format: 5 bullet summary, risk table, next-30-day actions with owner, KPI, and timeline." > deliverables/TEAM_ALPHA/insight-report-v2.md
 ```
 
 ### Time Gates
@@ -326,22 +362,22 @@ gemini -p "Revise @deliverables/TEAM_ALPHA/insight-report.md into executive form
 
 ### Expected Output Sample (Short)
 ```markdown
-- Revenue grows in North Online from 125000 (Jan) to 164000 (Jun), about +31%.
-- Critical billing tickets rise with lower satisfaction (2.8 then 2.6), indicating service risk.
+- Hero headline is specific and differentiated, but CTA lacks proof detail and urgency in Thai copy.
+- Risk: mixed claims ("up to 50%") without evidence may reduce trust for manager audience.
 ```
 
 ### Common Failures and Recovery
-- Failure: claims without numbers.
-	- Recovery: require numeric references from CSV rows/fields.
-- Failure: recommendations are too generic.
+- Failure: recommendations are generic and not tied to hero content.
+	- Recovery: require each recommendation to quote one exact line from `content-pack-v2.md`.
+- Failure: actions are not executable.
 	- Recovery: require owner + timeline + KPI for each action.
 
 ### Facilitator Intervention
 - If outputs are inconsistent, project one sample insight and ask teams to match structure.
 
 ### Success Criteria
-- Insight statements reference data.
-- Anomalies and recommendations are linked.
+- Insight statements reference exact website elements or hero lines.
+- Risks and recommendations are linked.
 - Report is manager-ready.
 
 ---

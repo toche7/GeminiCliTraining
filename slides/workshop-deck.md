@@ -120,9 +120,11 @@ Output format: markdown table
 
 ## Slide 8 - Gemini CLI Core Usage (5 min)
 ### On Slide
-- Interactive flow
-- One-shot prompt flow
-- Session continuation
+- Interactive flow: `gemini`
+- One-shot prompt flow: `gemini -p "..."`
+- Session management: `/chat list`, `/rewind`
+- Context management: `/clear`, `/compress`
+- Shell mode inside REPL: `!command`
 - Optional repo bootstrap with `/init`
 
 ### Live Demo Commands
@@ -130,10 +132,28 @@ Output format: markdown table
 gemini
 gemini -p "Summarize top 5 capabilities of Gemini CLI for beginners"
 ```
+Inside REPL:
+```text
+!ls
+/chat list
+/clear
+```
 
 ### Speaker Notes
 - TH: Interactive เหมาะกับสำรวจ, one-shot เหมาะกับงานเป็นขั้นตอน
 - EN: Teach learners when to use each mode to control time and consistency.
+- TH: ใน REPL ใช้ `!command` เพื่อรัน shell โดยไม่ต้องออกจาก session เช่น `!npm run start`
+- EN: `!command` runs a shell command without leaving the session; useful for build-then-explain patterns.
+- TH: `/chat list` ดู session ที่บันทึกไว้, `/rewind` ย้อนกลับไปข้อความก่อนหน้าได้
+- EN: `/chat list` shows saved checkpoints; `/rewind` lets learners step back and re-prompt without restarting.
+- TH: `/compress` ใช้เมื่อ context ยาวเกินไป, `/clear` ล้างหน้าจอและประวัติ
+- EN: Use `/compress` to summarize long context; use `/clear` to reset screen and history.
+
+### Keyboard Shortcuts to Mention
+- Ctrl+P / Ctrl+N — cycle prompt history
+- Ctrl+Enter — new line in input
+- Ctrl+L — clear screen
+- Ctrl+C — quit application
 
 ### Transition
 - "Before context injection, show a quick `/init` bootstrap pattern."
@@ -156,6 +176,9 @@ cat gemini.md
 - TH: `/init` เป็นตัวช่วยตั้งต้น ไม่ใช่การตั้งค่าที่สมบูรณ์ ต้องตรวจไฟล์ที่ได้เสมอ
 - EN: Treat `/init` as scaffolding; refine the generated guidance before relying on it.
 - TH: ถ้าบางเครื่องไม่มีคำสั่งนี้ ให้ข้ามและใช้ `@gemini.md` แบบ explicit ต่อได้ทันที
+- EN: If `/init` is unavailable, skip bootstrap and continue with explicit `@gemini.md` workflow.
+- TH: หลัง `/init` ใช้ `/chat save <tag>` เพื่อบันทึก session ก่อน `/quit`
+- EN: After `/init`, optionally run `/chat save <tag>` to checkpoint the session before quitting.
 
 ### Transition
 - "Now use file context and compare guided vs baseline output."
@@ -275,48 +298,58 @@ Keep the same 3 channels and keep Thai + English output.
 
 ## Slide 15 - Web App Integration Pattern (4 min)
 ### On Slide
-Frontend form -> backend endpoint -> AI -> structured JSON response
+Lab C hero artifact -> Gemini CLI -> landing-page-v1.html -> local preview
 
 ### Speaker Notes
-- TH: จุดสำคัญคือ response ต้องเป็นโครงสร้างเพื่อให้ frontend ใช้งานง่าย
-- EN: Structured JSON enables predictable UI rendering.
+- TH: ให้ย้ำว่า Lab D ใช้ output จาก Lab C มาสร้างหน้าเว็บจริงด้วย Gemini CLI
+- EN: This is implementation continuity: content creation in C, website build in D.
 
 ### Visual Direction
-- Show a 4-box flow diagram with request/response arrows.
+- Show 4-box flow with artifact source label: `content-pack-v2.md` -> generate HTML -> preview.
 
 ### Transition
 - "Guardrails prevent security and reliability issues."
 
 ## Slide 16 - Integration Guardrails (4 min)
 ### On Slide
-- Keep keys server-side
-- Add timeout handling
-- Return readable errors
+- Generate in project folder only
+- Keep secrets server-side
+- Validate output before publish
 
 ### Live Demo
+Enter REPL and paste prompt:
 ```bash
-curl -X POST http://localhost:3000/api/generate -H "Content-Type: application/json" -d '{"input":"Summarize Q2 performance"}'
+gemini
+```
+```text
+Using @deliverables/TEAM_ALPHA/content-pack-v2.md, generate a responsive single-file landing page HTML with embedded CSS.
+Include: hero headline, subheadline, CTA, one trust section, and footer. Keep bilingual tone. Return HTML only.
+```
+Then save:
+```text
+/save deliverables/TEAM_ALPHA/landing-page-v1.html
+/quit
 ```
 
 ### Speaker Notes
-- TH: อย่าเก็บ API key ใน frontend เด็ดขาด
-- EN: Error messages must be understandable for non-engineers.
+- TH: ห้ามสั่งให้ tool สร้างไฟล์ออกนอก repo และต้องตรวจหน้าเว็บก่อนใช้งานจริง
+- EN: Use REPL for interactive feedback, then validate visual and copy quality before publishing.
 
 ### Transition
 - "Next we apply similar structure to data analysis."
 
 ## Slide 17 - Data Insight Pattern (4 min)
 ### On Slide
-Raw CSV -> trend extraction -> anomaly detection -> recommendations
+landing-page-v1.html -> conversion risk review -> prioritized recommendations
 
 ### Live Demo
 ```bash
-gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/support_tickets.csv. Return trends, anomalies, and 3 actions."
+gemini -p "Analyze @deliverables/TEAM_ALPHA/landing-page-v1.html and @deliverables/TEAM_ALPHA/content-pack-v2.md. Return 3 strengths, 3 conversion risks, and 3 prioritized recommendations."
 ```
 
 ### Speaker Notes
-- TH: ให้ยกตัวเลขจากข้อมูลมาด้วยทุก insight
-- EN: Require evidence-backed statements.
+- TH: ทุกข้อเสนอแนะต้องอ้างอิงข้อความจริงจากหน้าเว็บหรือ hero line
+- EN: Recommendations must map to concrete page elements and expected KPI impact.
 
 ### Transition
 - "Insights must be manager-ready and actionable."

@@ -16,11 +16,27 @@ gemini -p "Design a 5-step workflow for weekly reporting with risks, quality che
 # Optional first-time bootstrap inside REPL
 gemini
 /init
+/chat save bootstrap
 /quit
 
 cat gemini.md
 gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, and top 3 improvements."
 gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 strengths, 3 risks, top 3 improvements, and a short note explaining how gemini.md changed the output."
+```
+
+Inside REPL — shell mode and session management:
+```text
+# Run a shell command without leaving the session
+!ls
+!npm run start
+
+# Session management
+/chat list
+/rewind
+
+# Context management
+/compress
+/clear
 ```
 
 ## Lab B Artifact Commands
@@ -57,22 +73,39 @@ Revise the previous content pack with a stronger CTA and clearer differentiation
 
 ## Module D Demo
 ```bash
-cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining/materials/webapp-starter
-npm install
-cp .env.example .env
-npm start
+cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
+gemini
+```
+
+Inside REPL, paste this prompt:
+```text
+Using @deliverables/TEAM_ALPHA/content-pack-v2.md, generate a single-file landing page HTML with embedded CSS.
+Include: hero headline, subheadline, CTA button, one trust section, and one footer.
+Keep it responsive and preserve the bilingual tone.
+Return HTML only.
+```
+
+After Gemini responds, save it:
+```text
+/save deliverables/TEAM_ALPHA/landing-page-v1.html
+/quit
+```
+
+Then publish and run:
+```bash
+cp deliverables/TEAM_ALPHA/landing-page-v1.html materials/webapp-starter/public/landing.html
+cd materials/webapp-starter && npm install && cp .env.example .env && npm start
 ```
 
 In new terminal:
 ```bash
-curl -s -X POST http://localhost:3000/api/generate -H "Content-Type: application/json" -d '{"input":"Summarize Q2 sales and support trends"}'
-curl -s -X POST http://localhost:3000/api/generate -H "Content-Type: application/json" -d '{"invalid":"payload"}'
+open http://localhost:3000/landing.html
 ```
 
 ## Module E Demo
 ```bash
 cd /Users/taweesaksamanchuen/Dev/GeminiCliTraining
-gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/support_tickets.csv. Return trends with numbers, anomalies, and 3 recommendations with confidence."
+gemini -p "Analyze @deliverables/TEAM_ALPHA/landing-page-v1.html and @deliverables/TEAM_ALPHA/content-pack-v2.md. Return 3 strengths, 3 conversion risks, and 3 prioritized recommendations with expected impact and confidence." > deliverables/TEAM_ALPHA/insight-report.md
 ```
 
 ## Capstone Prompt

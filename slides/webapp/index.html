@@ -92,6 +92,21 @@ gemini -p "Say hello in one sentence"</code></pre>
 				<p class="muted-note">Requires Node.js 18+ &nbsp;|&nbsp; Google account for auth &nbsp;|&nbsp; Internet connection</p>
 			</section>
 
+			<section class="slide" data-module="Kickoff" data-title="Install &amp; Authenticate (Windows)" data-time="4 min">
+				<h2>Install &amp; Authenticate Gemini CLI (Windows)</h2>
+				<p class="slide-label">Step 0 — Open PowerShell (Run as user)</p>
+				<pre><code>winget --version</code></pre>
+				<p class="slide-label">Step 1 — Install Node.js LTS (if needed)</p>
+				<pre><code>winget install OpenJS.NodeJS.LTS</code></pre>
+				<p class="slide-label">Step 2 — Install Gemini CLI</p>
+				<pre><code>npm install -g @google/gemini-cli</code></pre>
+				<p class="slide-label">Step 3 — Authenticate + Verify</p>
+				<pre><code>gemini auth login
+gemini --version
+gemini -p "Say hello in one sentence"</code></pre>
+				<p class="muted-note">If winget is blocked by policy: install Node.js LTS from nodejs.org, then run npm install command above.</p>
+			</section>
+
 			<section class="slide" data-module="Module A" data-title="Agent Loop" data-time="4 min">
 				<h2>Module A: Agent Loop</h2>
 				<svg class="agent-loop-svg" viewBox="0 0 780 200" xmlns="http://www.w3.org/2000/svg">
@@ -253,13 +268,18 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 
 			<section class="slide" data-module="Module B" data-title="CLI Core" data-time="5 min">
 				<h2>Module B: Gemini CLI Core</h2>
-				<p class="section-note">Gemini CLI มี 2 โหมดหลัก — Interactive REPL สำหรับทดลองและ iterate และ One-shot mode สำหรับ automate งานใน script</p>
+				<p class="section-note">Gemini CLI ใช้งานได้ทั้งแบบ REPL และ one-shot พร้อมเครื่องมือจัดการ session, context, และ shell mode ในหน้าจอเดียว</p>
 
 				<ul>
-					<li><strong>Interactive REPL</strong> — พิมพ์ <code>gemini</code> เพื่อเข้าสู่โหมดสนทนา เหมาะสำหรับ iterate prompt หลายรอบและทดสอบ context injection</li>
 					<li><strong>One-shot mode</strong> — ใช้ <code>-p "..."</code> เพื่อส่ง prompt เดี่ยวและรับผลลัพธ์ทันที เหมาะสำหรับใช้ใน shell script และ pipeline</li>
 				</ul>
 				<pre><code>gemini -p "Summarize top capabilities for beginners"</code></pre>
+				<ul>
+					<li><strong>REPL mode</strong> — พิมพ์ <code>gemini</code> เพื่อเข้าสู่โหมดสนทนา เหมาะสำหรับ iterate prompt หลายรอบและทดสอบ context injection</li>
+					<li><strong>Session controls</strong> — ใช้ <code>/chat list</code> เพื่อดู checkpoints และ <code>/rewind</code> เพื่อย้อนกลับไปข้อความก่อนหน้า</li>
+					<li><strong>Context controls</strong> — ใช้ <code>/compress</code> เมื่อ context ยาว และ <code>/clear</code> เมื่อต้องการล้างหน้าจอและประวัติ</li>
+					<li><strong>Shell mode in REPL</strong> — ใช้ <code>!command</code> เช่น <code>!npm run start</code> โดยไม่ต้องออกจาก session</li>
+				</ul>
 			</section>
 
 			<section class="slide" data-module="Module B" data-title="CLI Flags" data-time="5 min">
@@ -294,10 +314,11 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 				<table class="cmd-table">
 					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
 					<tbody>
-						<tr><td><code>/reset</code></td><td>Fresh context when model is confused</td></tr>
-						<tr><td><code>/compress</code></td><td>Save context on long sessions</td></tr>
-						<tr><td><code>/history</code></td><td>Review what was said</td></tr>
-						<tr><td><code>/stats</code></td><td>See token usage</td></tr>
+						<tr><td><code>/chat list</code></td><td>ดูรายการ conversation checkpoints ที่บันทึกไว้</td></tr>
+						<tr><td><code>/chat save &lt;tag&gt;</code></td><td>บันทึก checkpoint ก่อนทดลอง prompt รอบใหม่</td></tr>
+						<tr><td><code>/rewind</code></td><td>ย้อนกลับไปจุดก่อนหน้าแล้วแตก branch ใหม่ของบทสนทนา</td></tr>
+						<tr><td><code>/compress</code></td><td>สรุป context ยาวให้สั้นลงเพื่อลด drift และใช้ token คุ้มขึ้น</td></tr>
+						<tr><td><code>/stats</code></td><td>ดู usage ระดับ session/model/tools</td></tr>
 					</tbody>
 				</table>
 			</section>
@@ -308,12 +329,12 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 				<table class="cmd-table">
 					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
 					<tbody>
-						<tr><td><code>/model gemini-2.0-flash</code></td><td>Switch to faster model mid-session</td></tr>
+						<tr><td><code>/model set &lt;model-name&gt;</code></td><td>สลับโมเดลใน session ปัจจุบันตามงานที่ทำ</td></tr>
 						<tr><td><code>/editor</code></td><td>Write complex prompts in VS Code / vim</td></tr>
 						<tr><td><code>/memory add &lt;text&gt;</code></td><td>Remember preferences across sessions</td></tr>
 						<tr><td><code>/memory show</code></td><td>View saved memory</td></tr>
-						<tr><td><code>/chat new</code></td><td>Start a named session</td></tr>
-						<tr><td><code>/chat resume &lt;name&gt;</code></td><td>Pick up a saved session</td></tr>
+						<tr><td><code>/chat resume &lt;tag&gt;</code></td><td>กลับไปทำงานต่อจาก checkpoint ที่เคยบันทึก</td></tr>
+						<tr><td><code>/mcp list</code></td><td>ดู MCP servers/tools ที่เชื่อมต่ออยู่</td></tr>
 					</tbody>
 				</table>
 				<p class="muted-note">Skip for now: <code>/mcp</code>, <code>/tools</code>, <code>/theme</code>, <code>/bug</code></p>
@@ -341,6 +362,7 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 				</ul>
 				<pre><code>gemini
 /init
+/chat save bootstrap
 /quit
 cat gemini.md</code></pre>
 			</section>
@@ -377,10 +399,10 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 				<p>Explore the REPL, manage a session, and practice key slash commands before running any file-based labs.</p>
 				<ol>
 					<li>Enter <code>gemini</code> → run <code>/about</code> and <code>/help</code></li>
-					<li>Have a 2-turn conversation → check <code>/history</code> and <code>/stats</code></li>
+					<li>Have a 2-turn conversation → save checkpoint with <code>/chat save b0-demo</code> and check <code>/stats</code></li>
 					<li>Run <code>/compress</code> → compare token count before/after</li>
-					<li>Run <code>/reset</code> → switch model with <code>/model gemini-2.0-flash</code></li>
-					<li>Confirm new model responds → <code>/quit</code></li>
+					<li>Run <code>/chat list</code> then <code>/rewind</code> to branch from earlier context</li>
+					<li>Switch model with <code>/model set &lt;model-name&gt;</code>, run one prompt, then <code>/quit</code></li>
 				</ol>
 				<p class="muted-note">Press <kbd>L</kbd> to open the Lab panel for copy-ready commands and checklist.</p>
 			</section>
@@ -393,7 +415,7 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 						<tr><td>Auth fails / not logged in</td><td>Run <code>gemini auth login</code> again</td></tr>
 						<tr><td>Output is generic / vague</td><td>Add role + constraints + output format to prompt</td></tr>
 						<tr><td><code>@file.md</code> not found</td><td>Check path is relative to where you run the command</td></tr>
-						<tr><td>Context too long / confused</td><td>Run <code>/compress</code> then <code>/reset</code></td></tr>
+						<tr><td>Context too long / confused</td><td>Run <code>/compress</code>, then checkpoint with <code>/chat save</code> before continuing</td></tr>
 						<tr><td>Output cuts off mid-response</td><td>Ask to continue: <em>"continue from where you stopped"</em></td></tr>
 					</tbody>
 				</table>
@@ -449,79 +471,85 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 			</section>
 
 			<section class="slide" data-module="Module D" data-title="Web App Pattern" data-time="4 min">
-				<h2>Module D: Web App Integration Pattern</h2>
-				<p class="section-note">รูปแบบการเชื่อม AI เข้ากับ web app ที่ปลอดภัย — API key อยู่ server-side เสมอ ไม่เคย expose ไปที่ browser</p>
-				<p class="big">Frontend → Backend → AI → Structured JSON</p>
+				<h2>Module D: Gemini CLI Website Build</h2>
+				<p class="section-note">เปลี่ยนจาก content generation เป็น content implementation: ใช้ landing hero จาก Lab C แล้วให้ Gemini CLI สร้างหน้าเว็บจริง และต่อยอดด้วย form submission ที่บันทึกข้อมูลลง CSV</p>
+				<p class="big">Lab C artifact → Gemini CLI → landing-page-v1.html → webapp starter → local preview → (optional) v2 / v3</p>
 				<ul>
-					<li><strong>Frontend</strong> — รับ input จากผู้ใช้และส่ง request ไปที่ backend ของเราเอง ไม่เคย call AI API โดยตรงจาก browser เพื่อป้องกัน API key ถูกขโมย</li>
-					<li><strong>Backend</strong> — Express server รับ request, validate input, แล้ว call Gemini API พร้อม API key ที่เก็บไว้ใน environment variable</li>
-					<li><strong>Structured JSON</strong> — ระบุใน prompt ให้ AI ตอบกลับเป็น JSON เสมอ เพื่อให้ฝั่ง frontend parse และแสดงผลได้อย่างน่าเชื่อถือ</li>
+					<li><strong>Prompt-driven build</strong> — ส่ง <code>@content-pack-v2.md</code> เข้า Gemini CLI เพื่อสร้าง HTML/CSS ใน REPL แล้ว save เป็น <code>landing-page-v1.html</code></li>
+					<li><strong>Webapp starter</strong> — สั่ง Gemini สร้าง simple webapp starter สำหรับ HTML และ form submission แล้ว copy ไฟล์เข้า <code>webapp-starter/public/</code> เปิด preview ได้ทันที</li>
+					<li><strong>Optional v2</strong> — ปรับ readability และ CTA hierarchy ใน REPL ใหม่ บันทึกเป็น <code>landing-page-v2.html</code></li>
+					<li><strong>Optional v3</strong> — เพิ่ม form ที่ทีม apply ได้และบันทึกข้อมูลลง CSV database บันทึกเป็น <code>landing-page-v3.html</code></li>
 				</ul>
 			</section>
 
 			<section class="slide" data-module="Module D" data-title="Guardrails" data-time="4 min">
 				<h2>Integration Guardrails</h2>
-				<p class="section-note">3 กฎนี้ต้องปฏิบัติทุกครั้งที่นำ AI เข้า production — ละเลยข้อใดข้อหนึ่งอาจทำให้ app พัง หรือ API key ถูกขโมย</p>
+				<p class="section-note">3 กฎนี้ต้องปฏิบัติทุกครั้งเมื่อรับข้อมูลจากไฟล์หรือ input ผู้ใช้ เพื่อให้ flow C→D→E ปลอดภัยและตรวจสอบย้อนกลับได้</p>
 				<ul>
-					<li><strong>Keep keys server-side</strong> — เก็บ <code>GEMINI_API_KEY</code> ใน <code>.env</code> และโหลดผ่าน <code>process.env</code> เท่านั้น ห้าม hardcode หรือ commit ลง git repository</li>
-					<li><strong>Add timeout handling</strong> — ตั้ง timeout สำหรับทุก AI call (แนะนำ 30 วินาที) และ handle กรณีที่ request ค้างหรือ model ไม่ตอบสนองด้วย fallback message</li>
-					<li><strong>Return readable errors</strong> — เมื่อเกิด error ส่ง message ที่ user เข้าใจได้กลับไป ไม่ใช่ stack trace หรือ raw API error ที่อาจเปิดเผย internal structure</li>
+					<li><strong>Validate source path</strong> — รับไฟล์เฉพาะใน project scope และป้องกัน path traversal</li>
+					<li><strong>Keep keys server-side</strong> — ถ้าต่อ real API ให้ key อยู่ backend เท่านั้น ไม่ออกไป frontend</li>
+					<li><strong>Return readable errors</strong> — บอกสาเหตุแบบแก้ได้ เช่นไฟล์ไม่พบ, payload ไม่ครบ, path ไม่ถูกต้อง</li>
 				</ul>
 			</section>
 
 			<section class="slide" data-module="Module D" data-title="Lab D: Web App Integration" data-time="20 min">
-				<h2>Lab D: Web App AI Integration</h2>
+				<h2>Lab D: Gemini CLI Website Build</h2>
 				<p class="slide-label">Objective</p>
-				<p>Start an Express server, call the AI endpoint, and validate both the success and error response paths.</p>
+				<p>Generate a landing page from Lab C hero copy with Gemini CLI in REPL, deploy it to a simple webapp starter, preview locally, and optionally iterate to add stronger UX and a form backed by CSV.</p>
 				<ol>
-					<li>Navigate to <code>materials/webapp-starter</code> and run <code>npm install &amp;&amp; npm start</code></li>
-					<li>In a new terminal, POST to <code>/api/generate</code> with a valid payload → save response</li>
-					<li>POST with an invalid payload → observe error message</li>
-					<li>Verify <code>api-response.json</code> contains <code>ok: true</code> and a result object</li>
+					<li><strong>Step 0</strong> — Confirm Lab C files exist: <code>content-pack.md</code> and <code>content-pack-v2.md</code></li>
+					<li><strong>Step 1</strong> — Enter REPL → paste generate prompt → save output as <code>landing-page-v1.html</code></li>
+					<li><strong>Step 2</strong> — Ask Gemini to create simple webapp starter with HTML and form submission support → exit REPL</li>
+					<li><strong>Step 3</strong> — Copy <code>landing-page-v1.html</code> into <code>webapp-starter/public/</code> → run <code>npm start</code> and preview</li>
+					<li><strong>Step 4</strong> (optional) — New REPL: revise v1 for better readability and CTA hierarchy → save as <code>landing-page-v2.html</code></li>
+					<li><strong>Step 5</strong> (optional) — New REPL: add team-apply form that writes submissions to a CSV database → save as <code>landing-page-v3.html</code></li>
 				</ol>
 				<p class="slide-label" style="margin-top:14px">Success criteria</p>
 				<ul>
-					<li>Server starts on port 3000 without errors</li>
-					<li>Can demonstrate both success and error path behavior</li>
+					<li>Used REPL (not one-shot prompt) to generate the page</li>
+					<li>Generated page includes hero, trust section, and footer</li>
+					<li>Page is viewable in webapp starter via <code>npm start</code></li>
+					<li>Can explain how Lab C artifact was reused to build the page</li>
+					<li>(Optional) v2 shows clear readability/CTA improvement; v3 adds a working form with CSV storage</li>
 				</ul>
-				<p class="muted-note">Press <kbd>L</kbd> for copy-ready curl commands and checklist.</p>
+				<p class="muted-note">Press <kbd>L</kbd> for copy-ready commands and checklist.</p>
 			</section>
 
 			<section class="slide" data-module="Module E" data-title="Data Insight Pattern" data-time="4 min">
 				<h2>Module E: Data Insight Pattern</h2>
-				<p class="section-note">แทนที่จะอ่าน CSV ด้วยตาเปล่า เราจะใช้ Agent วิเคราะห์และสรุป insight ที่ผู้บริหารตัดสินใจได้ทันที</p>
-				<p class="big">Raw CSV → trends → anomalies → recommendations</p>
+				<p class="section-note">ใช้ Gemini CLI อ่านและวิเคราะห์ข้อมูล CSV โดยตรง แล้วให้ AI สร้าง visualization dashboard พร้อม histogram ในครั้งเดียว</p>
+				<p class="big">demodata.csv → CEO report → visualization dashboard → Team Size Histogram</p>
 				<ul>
-					<li><strong>Trends</strong> — Agent หาแนวโน้มที่เกิดขึ้นต่อเนื่อง เช่น ยอดขายเพิ่มขึ้นทุกเดือน หรือ support ticket ลดลงหลัง product update</li>
-					<li><strong>Anomalies</strong> — ระบุจุดผิดปกติที่ต้องตรวจสอบ เช่น ยอดขาย drop 40% ในสัปดาห์ที่ 3 หรือ ticket volume พุ่งสูงผิดปกติในหมวดหมู่ใดหมวดหมู่หนึ่ง</li>
-					<li><strong>Recommendations</strong> — สรุปเป็น action items ที่ระบุ owner, timeline, และ KPI วัดผลได้ชัดเจน ไม่ใช่แค่ observation ลอยๆ</li>
+					<li><strong>Data analysis</strong> — ส่ง <code>@demodata.csv</code> เข้า Gemini REPL แล้วขอรายงานสำหรับ CEO</li>
+					<li><strong>Dashboard generation</strong> — สั่ง Gemini สร้าง visualization dashboard จาก analysis ในขั้นตอนเดียวกัน แล้ว preview ผ่าน webapp starter</li>
+					<li><strong>Iterative refinement</strong> — เปิด REPL ใหม่แล้วเพิ่ม Team Size Distribution Histogram เข้าไปใน dashboard</li>
 				</ul>
 			</section>
 
 			<section class="slide" data-module="Module E" data-title="Manager Ready" data-time="3 min">
-				<h2>Manager-Ready Reporting</h2>
+				<h2>CEO-Ready Data Report</h2>
 				<p class="section-note">รายงานที่ดีต้องทำให้ผู้บริหารตัดสินใจได้ภายใน 2 นาที — ใช้ 3 องค์ประกอบนี้เป็น output contract ใน prompt</p>
 				<ul>
-					<li><strong>Concise summary</strong> — สรุปสถานการณ์รวมใน 3–5 bullet ไม่เกิน 2 บรรทัดต่อข้อ เน้น what happened และ why it matters</li>
-					<li><strong>Quant-backed findings</strong> — ทุก finding ต้องอ้างอิงตัวเลขจาก data จริง เช่น "ยอดขาย Q1 เพิ่มขึ้น 23% YoY" ไม่ใช่ "ยอดขายดีขึ้น"</li>
-					<li><strong>Prioritized actions</strong> — เรียง action items ตามผลกระทบและความเร่งด่วน แต่ละข้อระบุ owner, deadline, และ KPI ที่วัดความสำเร็จได้</li>
+					<li><strong>Concise summary</strong> — สรุปสถานการณ์รวมใน 3–5 bullet เน้น what the data shows และ why it matters for the business</li>
+					<li><strong>Visual evidence</strong> — dashboard และ histogram ช่วยให้ CEO เห็นภาพ distribution และ trend ได้ทันที ไม่ต้องอ่าน raw numbers</li>
+					<li><strong>Iterative prompting</strong> — เริ่มจาก CEO report ก่อน แล้วต่อด้วย dashboard และปรับเพิ่ม chart ได้ใน REPL session ใหม่ทีละขั้น</li>
 				</ul>
 			</section>
 
 			<section class="slide" data-module="Module E" data-title="Lab E: Data Insight" data-time="15 min">
-				<h2>Lab E: Data Insight Summarization</h2>
+				<h2>Lab E: Data Insight &amp; Visualization</h2>
 				<p class="slide-label">Objective</p>
-				<p>Turn raw CSV sales and support data into decision-ready executive insights with quant-backed findings.</p>
+				<p>Use Gemini CLI to read <code>demodata.csv</code>, produce a CEO-ready analysis report, generate a visualization dashboard, preview it locally, then add a Team Size Distribution Histogram in a follow-up REPL session.</p>
 				<ol>
-					<li>Run the improved prompt referencing both CSV files → save to <code>insight-report.md</code></li>
-					<li>Verify findings cite actual numbers from the data</li>
-					<li>Reformat into executive summary → save as <code>insight-report-v2.md</code></li>
-					<li>Check: does v2 have 5-bullet summary + risk table + next-30-day actions?</li>
+					<li><strong>Step 1</strong> — Enter REPL → <code>Read @demodata.csv and analyze for report to CEO</code></li>
+					<li><strong>Step 2</strong> — In same session: <code>Create a visualization dashboard</code> → quit REPL → run <code>cd webapp-starter &amp;&amp; npm start</code> and preview</li>
+					<li><strong>Step 3</strong> — Start new REPL → <code>Add Team Size Distribution Histogram to dashboard</code></li>
 				</ol>
 				<p class="slide-label" style="margin-top:14px">Success criteria</p>
 				<ul>
-					<li>Every insight references a specific number from the CSV</li>
-					<li>Recommendations have owner + timeline + KPI</li>
+					<li>CEO analysis report generated from <code>demodata.csv</code></li>
+					<li>Visualization dashboard viewable in webapp starter</li>
+					<li>Team Size Distribution Histogram added to the dashboard</li>
 				</ul>
 				<p class="muted-note">Press <kbd>L</kbd> for copy-ready commands and checklist.</p>
 			</section>

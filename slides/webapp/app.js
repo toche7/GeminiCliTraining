@@ -29,7 +29,8 @@ const labData = {
 		title: 'Lab A: AI Workflow Design',
 		objective: 'Design one reusable AI-assisted workflow for a real recurring task. Generate a draft, then revise it with quality checks and fallback actions per step.',
 		commands: [
-			{ label: 'Setup — Create your team folder', code: 'mkdir -p deliverables/TEAM_ALPHA' },
+			{ label: 'Setup (macOS/Linux) — Create your team folder', code: 'mkdir -p deliverables/TEAM_ALPHA' },
+			{ label: 'Setup (Windows PowerShell) — Create your team folder', code: 'New-Item -ItemType Directory -Path deliverables/TEAM_ALPHA -Force' },
 			{ label: 'Step 2 — Generate first workflow draft (pick your own task or use the example)', code: 'gemini -p "You are a workflow coach. Design a 5-step AI-assisted workflow for weekly report writing. For each step include goal, input, output, quality check, risk, fallback. Output as markdown table." > deliverables/TEAM_ALPHA/workflow-basics.md' },
 			{ label: 'Step 3 — Revise for beginners', code: 'gemini -p "Read @deliverables/TEAM_ALPHA/workflow-basics.md for beginners. Make each step executable in under 10 minutes." > deliverables/TEAM_ALPHA/workflow-basics-v2.md' },
 			{ label: 'Step 4 — Verify output was saved', code: 'cat deliverables/TEAM_ALPHA/workflow-basics-v2.md' },
@@ -106,7 +107,7 @@ const labData = {
 		},
 	},
 
-	'Module C|Content Automation':  
+	'Module C|Lab C: Content Pack':  
 	{
 	title: 'Lab C: Automated Content Pack',
 	objective: 'Generate multi-channel content (social, email, landing page) from one brief in a single REPL session. Keep message consistent across channels and iterate with follow-up prompts for a stronger CTA.',
@@ -134,79 +135,56 @@ const labData = {
 	},
 	},
 
-	'Module D|Web App Pattern': {
-		title: 'Lab D: Web App AI Integration',
-		objective: 'Start an Express server, call the AI endpoint, and validate structured JSON output. Verify both success and error path behavior.',
-		commands: [
-			{ label: 'Start the web app', code: 'cd materials/webapp-starter && npm install && cp .env.example .env && npm start' },
-			{ label: 'Call the success endpoint', code: "curl -s -X POST http://localhost:3000/api/generate -H 'Content-Type: application/json' -d '{\"input\":\"Summarize Q2 sales and support trends\"}' > deliverables/TEAM_ALPHA/api-response.json" },
-			{ label: 'Test the error path', code: "curl -s -X POST http://localhost:3000/api/generate -H 'Content-Type: application/json' -d '{\"invalid\":\"payload\"}'" },
-		],
-		checklist: [
-			'Server starts on port 3000 without errors',
-			'api-response.json contains ok:true and a result object',
-			'Result object is structured JSON (not plain text)',
-			'Error path returns a readable error message',
-		],
-		prompts: {
-			baseline: 'How do I connect an AI API to my web app?',
-			improved:  'You are a backend architect.\nDesign a minimal safe pattern for calling an external AI API from an Express endpoint.\nInclude: request schema, timeout handling, error response shape, and key security rules.\nOutput as annotated pseudocode.',
-		},
-	},
-
 	'Module D|Lab D: Web App Integration': {
-		title: 'Lab D: Web App AI Integration',
-		objective: 'Start an Express server, call the AI endpoint, and validate structured JSON output. Verify both success and error path behavior.',
+		title: 'Lab D: Gemini CLI Website Build',
+		objective: 'Generate website HTML from Lab C hero using Gemini CLI in REPL, run it locally, and optionally create one improved v2 revision.',
 		commands: [
-			{ label: 'Step 1 — Navigate to starter and install', code: 'cd materials/webapp-starter && npm install && cp .env.example .env' },
-			{ label: 'Step 1 — Start the server', code: 'npm start' },
-			{ label: 'Step 2 — Call success endpoint (new terminal)', code: "curl -s -X POST http://localhost:3000/api/generate -H 'Content-Type: application/json' -d '{\"input\":\"Summarize Q2 sales and support trends\"}' > deliverables/TEAM_ALPHA/api-response.json" },
-			{ label: 'Step 3 — Test the error path', code: "curl -s -X POST http://localhost:3000/api/generate -H 'Content-Type: application/json' -d '{\"invalid\":\"payload\"}'" },
-			{ label: 'Step 4 — Verify saved response', code: 'cat deliverables/TEAM_ALPHA/api-response.json' },
-		],
-		checklist: [
-			'Server starts on port 3000 without errors',
-			'api-response.json contains ok:true and a result object',
-			'Result object is structured JSON (not plain text)',
-			'Error path returns a readable error message',
-			'Can explain what each guardrail prevents',
-		],
-		prompts: {
-			baseline: 'How do I connect an AI API to my web app?',
-			improved:  'You are a backend architect.\nDesign a minimal safe pattern for calling an external AI API from an Express endpoint.\nInclude: request schema, timeout handling, error response shape, and key security rules.\nOutput as annotated pseudocode.',
-		},
-	},
+			{ label: 'Step 0 — Confirm Lab C file exists', code: 'ls deliverables/TEAM_ALPHA/content-pack.md deliverables/TEAM_ALPHA/content-pack-v2.md' },
+			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
+			{ label: 'Step 1 — In REPL, paste this prompt', code: 'Using @content-pack-v2.md, generate a single-file landing page HTML with embedded CSS.\n Include: hero headline, subheadline, CTA button, one trust section, and one footer.\nKeep it responsive and preserve the bilingual tone. \nReturn HTML only.' },
+			{ label: 'Step 1 — Save output', code: 'Save html content to landing-page-v1.html' },
+			{ label: 'Step 2 — Publish page in starter app', code: 'create simple webapp starter package for html and simple form submission to webapp-starter folder' },
+			{ label: 'Step 2 — Exit REPL', code: '/quit' },
+			{ label: 'Step 3 — Publish page in starter app', code: 'cp landing-page-v1.html webapp-starter/public/landing-page.html' },
+			{ label: 'Step 3 — Run server and preview', code: 'cd webapp-starter && npm start' },
+			{ label: 'Step 4 (optional) — Start new REPL for v2', code: 'gemini' },
+			{ label: 'Step 4 (optional) — Paste refinement prompt', code: 'Revise @landing-page-v1.html for better readability and stronger CTA hierarchy.\nKeep output as single-file HTML and preserve bilingual tone.' },
+			{ label: 'Step 4 (optional) — Save v2', code: 'Save html content to landing-page-v2.html\n/quit' },
+			{ label: 'Step 4 — Run server and preview', code: 'cd webapp-starter && npm start' },
+			{ label: 'Step 5 (optional) — Start new REPL for v2', code: 'gemini' },
+			{ label: 'Step 5 (optional) — Paste refinement prompt', code: 'revise @landing-page-v2.html to have form that team can be apply and update to database where database is csv file' },
+			{ label: 'Step 5 (optional) — Save v3', code: 'Save html content to landing-page-v3.html\n/quit' },
+			{ label: 'Step 5 — Run server and preview', code: 'cd webapp-starter && npm start' },
 
-	'Module E|Data Insight Pattern': {
-		title: 'Lab E: Data Insight Summarization',
-		objective: 'Turn raw CSV data into decision-ready executive insights with quant-backed findings, anomaly analysis, and ranked recommendations.',
-		commands: [
-			{ label: 'Generate insight report', code: 'gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/support_tickets.csv. Return: top trends with numbers, anomalies with likely causes, and 3 recommendations with expected impact and confidence." > deliverables/TEAM_ALPHA/insight-report.md' },
-			{ label: 'Reformat as executive summary', code: 'gemini -p "Revise @deliverables/TEAM_ALPHA/insight-report.md into executive format: 5 bullet summary, risk table, next-30-day actions." > deliverables/TEAM_ALPHA/insight-report-v2.md' },
 		],
 		checklist: [
-			'insight-report.md references specific numbers from data',
-			'Anomalies linked to likely cause and business impact',
-			'≥3 recommendations with impact + confidence level',
-			'insight-report-v2.md is in executive format (bullets + risk table)',
+			'Entered REPL mode (not one-shot prompt)',
+			'landing-page-v1.html generated by Gemini CLI in REPL',
+			'Page includes hero + trust section + footer',
+			'Page is viewable at /landing.html',
+			'v2 includes at least one clear UX or CTA improvement',
+			'Can explain how Lab C output is reused in Lab D',
 		],
 		prompts: {
-			baseline: 'Summarize my sales CSV.',
-			improved:  'You are a data analyst.\nAnalyze the attached CSV files.\nReturn:\n1) Top 3 trends with numeric evidence\n2) Anomalies with likely cause and business impact\n3) Ranked recommendations with expected outcome and confidence level\nKeep each recommendation under 3 sentences.',
+			baseline: 'Create a simple landing page HTML.',
+			improved:  'You are a frontend engineer.\nUsing @deliverables/TEAM_ALPHA/content-pack-v2.md, generate a responsive single-file HTML landing page.\nInclude hero headline, subheadline, CTA, one trust section, and footer.\nUse clean semantic HTML and embedded CSS. Return HTML only.',
 		},
 	},
 
 	'Module E|Lab E: Data Insight': {
 		title: 'Lab E: Data Insight Summarization',
-		objective: 'Turn raw CSV data into decision-ready executive insights with quant-backed findings, anomaly analysis, and ranked recommendations.',
+		objective: 'Analyze the Lab D website output and propose prioritized improvements for copy quality and conversion outcomes.',
 		commands: [
-			{ label: 'Step 1 — Generate insight report', code: 'gemini -p "Analyze @materials/sample-data/sales.csv and @materials/sample-data/support_tickets.csv. Return: top trends with numbers, anomalies with likely causes, and 3 recommendations with expected impact and confidence." > deliverables/TEAM_ALPHA/insight-report.md' },
-			{ label: 'Step 2 — Verify output cites real numbers', code: 'cat deliverables/TEAM_ALPHA/insight-report.md' },
-			{ label: 'Step 3 — Reformat as executive summary', code: 'gemini -p "Revise @deliverables/TEAM_ALPHA/insight-report.md into executive format: 5 bullet summary, risk table, next-30-day actions." > deliverables/TEAM_ALPHA/insight-report-v2.md' },
+			{ label: 'Step 1 - Start new REPL for insights', code: 'gemini' },
+			{ label: 'Step 1 — Analyze data', code: 'Read @demodata.csv and analyze for report to CEO' },
+			{ label: 'Step 2 — Create visualization', code: 'Create a visualization dashboard' },
+			{ label: 'Step 2 - Quit REPL and run server to preview', code: '/quit && cd webapp-starter && npm start' },
+			{ label: 'Step 3 - Start new REPL for insights', code: 'gemini' },
+			{ label: 'Step 3 — Add Histogram', code: 'Add Team Size Distribution Histogram to dashboard' },
 		],
 		checklist: [
-			'insight-report.md references specific numbers from data',
-			'Anomalies linked to likely cause and business impact',
+			'insight-report.md references exact landing-page elements or hero lines',
+			'Risks linked to likely conversion impact',
 			'≥3 recommendations with impact + confidence level',
 			'insight-report-v2.md has 5-bullet summary + risk table + next-30-day actions',
 			'Each recommendation has owner + timeline + KPI',
