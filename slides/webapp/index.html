@@ -41,9 +41,9 @@
 					<span>Output-first</span>
 				</div>
 				<ul>
-					<li>เราจะสร้าง Workflow จริง ไม่ใช่แค่ prompts</li>
+					<li>เราจะเรียนรู้การใช้ Gemini CLI ในรูปแบบ AI Agent ที่สามารถทำงานได้จริง</li>
 					<li>เราจะใช้ Gemini CLI กับการสร้าง content, web app, และวิเคราะห์ข้อมูล</li>
-					<li>เราจะได้เรียนรู้การสร้างเทมเพลตที่ใช้ซ้ำได้และกระบวนการส่งมอบผลลัพธ์</li>
+					<li>เราจะได้เรียนรู้การสร้างเทมเพลตที่ใช้ซ้ำได้และกระบวนการส่งมอบผลลัพธ์</li>	
 				</ul>
 
 
@@ -107,6 +107,18 @@ gemini -p "Say hello in one sentence"</code></pre>
 				<p class="muted-note">If winget is blocked by policy: install Node.js LTS from nodejs.org, then run npm install command above.</p>
 			</section>
 
+			<section class="slide" data-module="Kickoff" data-title="Workspace Setup" data-time="2 min">
+				<h2>Work Space</h2>
+				<p class="slide-label">Step 1 — Create a working folder</p>
+				<pre><code>mkdir testCLI</code></pre>
+				<p class="slide-label">Step 2 — Change directory</p>
+				<pre><code>cd testCLI</code></pre>
+				<p class="slide-label">Step 3 — Work from this directory</p>
+				<p>We will work in this directory for all upcoming hands-on steps.</p>
+			</section>
+
+
+			
 			<section class="slide" data-module="Module A" data-title="Agent Loop" data-time="4 min">
 				<h2>Module A: Agent Loop</h2>
 				<svg class="agent-loop-svg" viewBox="0 0 780 200" xmlns="http://www.w3.org/2000/svg">
@@ -266,6 +278,35 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 				<p class="muted-note">กด <kbd>L</kbd> เพื่อเปิด Lab panel สำหรับ copy-ready commands</p>
 			</section>
 
+
+			<section class="slide" data-module="Module B" data-title="CLI Core" data-time="5 min">
+				<h2>Module B: Gemini CLI Core</h2>
+				<p class="section-note">Gemini CLI ใช้งานได้ทั้งแบบ REPL และ one-shot พร้อมเครื่องมือจัดการ session, context, และ shell mode ในหน้าจอเดียว</p>
+
+				<ul>
+					<li><strong>One-shot mode</strong> — ใช้ <code>-p "..."</code> เพื่อส่ง prompt เดี่ยวและรับผลลัพธ์ทันที เหมาะสำหรับใช้ใน shell script และ pipeline</li>
+				</ul>
+				<pre><code>gemini -p "Summarize top capabilities for beginners"</code></pre>
+				<ul>
+					<li><strong>REPL mode</strong> — พิมพ์ <code>gemini</code> เพื่อเข้าสู่โหมดสนทนา เหมาะสำหรับ iterate prompt หลายรอบและทดสอบ context injection</li>
+					<li><strong>Session controls</strong> — ใช้ <code>/chat list</code> เพื่อดู checkpoints และ <code>/rewind</code> เพื่อย้อนกลับไปข้อความก่อนหน้า</li>
+					<li><strong>Context controls</strong> — ใช้ <code>/compress</code> เมื่อ context ยาว และ <code>/clear</code> เมื่อต้องการล้างหน้าจอและประวัติ</li>
+					<li><strong>Shell mode in REPL</strong> — ใช้ <code>!command</code> เช่น <code>!npm run start</code> โดยไม่ต้องออกจาก session</li>
+				</ul>
+			</section>
+			<section class="slide" data-module="Module B" data-title="Demo: Gemini CLI (REPL)" data-time="4 min">
+				<h2>Demo using Gemini CLI (REPL)</h2>
+				<p class="section-note">สาธิตคำสั่งและหัวข้อสำคัญใน REPL ที่ควรรู้ก่อนเริ่ม Lab ถัดไป</p>
+				<p class="slide-label">Run these in REPL</p>
+				<pre><code>/model
+/theme
+/stats</code></pre>
+				<ul>
+					<li><strong>Search Web</strong> — ทดลองค้นข้อมูลจากเว็บเพื่อเสริม context</li>
+					<li><strong>Google Workspace</strong> — สาธิตการใช้งาน Google Workspace ร่วมกับ Gemini CLI</li>
+					<li><strong>Nanobanana</strong> — สาธิตการสร้างภาพด้วย Nanobanana ร่วมกับ Gemini CLI</li>
+				</ul>
+			</section>
 			<section class="slide" data-module="Module B" data-title="Shell Basics" data-time="5 min">
 				<h2>Shell Basics — Mac &amp; Windows</h2>
 				<p class="section-note">ก่อนใช้ Gemini CLI ต้องสั่งงาน terminal ได้ก่อน — นี่คือคำสั่งที่ใช้บ่อยที่สุดบน macOS/Linux (zsh/bash) และ Windows (PowerShell)</p>
@@ -319,9 +360,9 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 							<td><code>command | Out-File out.md</code></td>
 						</tr>
 						<tr>
-							<td>Pipe output to next command</td>
-							<td><code>cat file.csv | gemini -p "..."</code></td>
-							<td><code>Get-Content file.csv | gemini -p "..."</code></td>
+							<td>Copy file</td>
+							<td><code>cp file.csv file-copy.csv</code></td>
+							<td><code>Copy-Item file.csv file-copy.csv</code></td>
 						</tr>
 						<tr>
 							<td>Clear the screen</td>
@@ -329,36 +370,20 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 							<td><code>cls</code></td>
 						</tr>
 						<tr>
-							<td>Check if command exists</td>
-							<td><code>which gemini</code></td>
-							<td><code>Get-Command gemini</code></td>
+							<td>Remove file</td>
+							<td><code>rm file.csv</code></td>
+							<td><code>Remove-Item file.csv</code></td>
 						</tr>
 						<tr>
-							<td>Show environment variable</td>
-							<td><code>echo $GEMINI_API_KEY</code></td>
-							<td><code>echo $env:GEMINI_API_KEY</code></td>
+							<td>Show top processes</td>
+							<td><code>top</code></td>
+							<td><code>Get-Process | Sort-Object CPU -Descending | Select-Object -First 10</code></td>
 						</tr>
 					</tbody>
 				</table>
 				<p class="muted-note">💡 Windows users: use <strong>PowerShell</strong>, not Command Prompt (cmd) — Gemini CLI works best there</p>
 			</section>
-
-			<section class="slide" data-module="Module B" data-title="CLI Core" data-time="5 min">
-				<h2>Module B: Gemini CLI Core</h2>
-				<p class="section-note">Gemini CLI ใช้งานได้ทั้งแบบ REPL และ one-shot พร้อมเครื่องมือจัดการ session, context, และ shell mode ในหน้าจอเดียว</p>
-
-				<ul>
-					<li><strong>One-shot mode</strong> — ใช้ <code>-p "..."</code> เพื่อส่ง prompt เดี่ยวและรับผลลัพธ์ทันที เหมาะสำหรับใช้ใน shell script และ pipeline</li>
-				</ul>
-				<pre><code>gemini -p "Summarize top capabilities for beginners"</code></pre>
-				<ul>
-					<li><strong>REPL mode</strong> — พิมพ์ <code>gemini</code> เพื่อเข้าสู่โหมดสนทนา เหมาะสำหรับ iterate prompt หลายรอบและทดสอบ context injection</li>
-					<li><strong>Session controls</strong> — ใช้ <code>/chat list</code> เพื่อดู checkpoints และ <code>/rewind</code> เพื่อย้อนกลับไปข้อความก่อนหน้า</li>
-					<li><strong>Context controls</strong> — ใช้ <code>/compress</code> เมื่อ context ยาว และ <code>/clear</code> เมื่อต้องการล้างหน้าจอและประวัติ</li>
-					<li><strong>Shell mode in REPL</strong> — ใช้ <code>!command</code> เช่น <code>!npm run start</code> โดยไม่ต้องออกจาก session</li>
-				</ul>
-			</section>
-
+			
 			<section class="slide" data-module="Module B" data-title="CLI Flags" data-time="5 min">
 				<h2>Essential CLI Flags</h2>
 				<table class="cmd-table">
@@ -406,7 +431,10 @@ Quality check: ทุกขั้นตอนต้องมี fallback action 
 				<table class="cmd-table">
 					<thead><tr><th>Command</th><th>Why learn it</th></tr></thead>
 					<tbody>
+						<tr><td><code>/model</code></td><td>ดูโมเดลปัจจุบันและตัวเลือกที่ใช้งานได้ใน session</td></tr>
 						<tr><td><code>/model set &lt;model-name&gt;</code></td><td>สลับโมเดลใน session ปัจจุบันตามงานที่ทำ</td></tr>
+						<tr><td><code>/theme</code></td><td>สลับธีมการแสดงผลของ CLI ให้เหมาะกับสภาพแสงและการอ่าน</td></tr>
+						<tr><td><code>/extensions</code></td><td>ดูและจัดการ extension ที่ใช้งานร่วมกับ CLI ในสภาพแวดล้อมปัจจุบัน</td></tr>
 						<tr><td><code>/editor</code></td><td>Write complex prompts in VS Code / vim</td></tr>
 						<tr><td><code>/memory add &lt;text&gt;</code></td><td>Remember preferences across sessions</td></tr>
 						<tr><td><code>/memory show</code></td><td>View saved memory</td></tr>
@@ -443,31 +471,19 @@ gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 stren
 /quit
 cat gemini.md</code></pre>
 			</section>
-			<section class="slide" data-module="Module B" data-title="What Is gemini.md?" data-time="4 min">
-				<h2>What Is gemini.md?</h2>
-				<p class="section-note"><code>gemini.md</code> คือไฟล์ guidance ระดับ repo สำหรับ Gemini CLI ใช้เก็บกติกาที่ควรใช้ซ้ำใน project นี้ เช่น รูปแบบ output, วิธีจัดลำดับความสำคัญ, และข้อควรระวัง</p>
-				<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">
-					<div style="background:var(--surface,#f0f7f4);border:1px solid var(--line,#c8ddd0);border-radius:12px;padding:14px 16px">
-						<p class="slide-label" style="margin:0 0 8px">What belongs in it</p>
-						<ul>
-							<li><strong>Preferred format</strong> เช่น markdown table, checklist, JSON</li>
-							<li><strong>Ranking rules</strong> เช่น impact vs effort ก่อนเสนอ action</li>
-							<li><strong>Repo guardrails</strong> เช่น mock-first path, keep secrets server-side</li>
-						</ul>
-					</div>
-					<div style="background:linear-gradient(180deg,#f7fcf8 0%, #eef8f1 100%);border:1px solid var(--line,#c8ddd0);border-radius:12px;padding:14px 16px">
-						<p class="slide-label" style="margin:0 0 8px">How to test it</p>
-						<ol>
-							<li>เปิดดู <code>gemini.md</code> ก่อนว่ากำหนดกติกาอะไรไว้</li>
-							<li>รัน prompt เดิมแบบไม่มีไฟล์นี้</li>
-							<li>รัน prompt เดิมอีกครั้งโดยเพิ่ม <code>@gemini.md</code></li>
-							<li>เปรียบเทียบว่า output ชัดขึ้น ใช้งานได้ขึ้น หรือจัดลำดับดีขึ้นหรือไม่</li>
-						</ol>
-					</div>
-				</div>
-				<pre><code>cat gemini.md
-gemini -p "Analyze @docs/course-outline.md and return 3 strengths, 3 risks, next actions"
-gemini -p "Analyze @docs/course-outline.md and follow @gemini.md. Return 3 strengths, 3 risks, next actions, and explain what changed because of gemini.md"</code></pre>
+			<section class="slide" data-module="Module B" data-title="Context: Hierarchical gemini.md" data-time="4 min">
+				<h2>Context: Hierarchical gemini.md</h2>
+				<p class="section-note">gemini.md ทำงานแบบลำดับชั้นและผสานกัน (additive): ระดับ user folder คือ global guidance และระดับโฟลเดอร์ย่อยคือ guidance ของโปรเจกต์นั้น โดยระบบจะบวกบริบทจากหลายชั้นเข้าด้วยกัน</p>
+				<ul>
+					<li><strong>Global (User folder)</strong> — <code>gemini.md</code> ที่อยู่ระดับ user folder ใช้เป็นกติกาพื้นฐานร่วมหลายงาน</li>
+					<li><strong>Project / Subfolder</strong> — <code>gemini.md</code> ในโฟลเดอร์ย่อยใช้กำหนดบริบทเฉพาะโปรเจกต์นั้น</li>
+					<li><strong>Precedence on conflict</strong> — ปกติจะบวกเพิ่มจากทุกชั้น แต่ถ้ากติกาขัดกันให้ยึดไฟล์ที่ใกล้ working directory มากกว่า</li>
+				</ul>
+				<p class="slide-label">Commands to know</p>
+				<pre><code>/init
+/memory
+/memory add "Always respond in Thai with concise bullets"
+/memory show</code></pre>
 			</section>
 
 			<section class="slide" data-module="Module B" data-title="Lab B0: Interactive Mode" data-time="10 min">
