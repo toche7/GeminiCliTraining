@@ -48,18 +48,17 @@ async function appendOnsiteApplication(rowData) {
   await fs.appendFile(onsiteCsvPath, row, 'utf8');
 }
 
-function shouldUseSslForPg() {
-  // Railway Postgres typically requires SSL in production deployments.
-  return process.env.NODE_ENV === 'production' || /railway\.app/i.test(databaseUrl);
-}
-
 function getPgPool() {
   if (!databaseUrl) return null;
   if (pgPool) return pgPool;
 
+  // Railway requires SSL for public connections. rejectUnauthorized:false
+  // handles Railway's self-signed certs. Safe for internal Railway network too.
+  const sslConfig = databaseUrl.startsWith('postgres') ? { rejectUnauthorized: false } : false;
+
   pgPool = new Pool({
     connectionString: databaseUrl,
-    ssl: shouldUseSslForPg() ? { rejectUnauthorized: false } : false
+    ssl: sslConfig
   });
 
   return pgPool;
@@ -286,6 +285,17 @@ app.get('/health', (_req, res) => {
     ok: true,
     service: 'gemini-workshop-webapp-starter',
     storage: getPgPool() ? 'postgres' : 'csv'
+  });
+});
+
+app.get('/api/debug-env', (_req, res) => {
+  const url = process.env.DATABASE_URL || '';
+  res.json({
+    DATABASE_URL_present: url.length > 0,
+    DATABASE_URL_prefix: url ? url.slice(0, 15) + '...' : '(empty)',
+    NODE_ENV: process.env.NODE_ENV || '(not set)',
+    PORT: process.env.PORT || '(not set)',
+    storage_mode: getPgPool() ? 'postgres' : 'csv'
   });
 });
 
