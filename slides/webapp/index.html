@@ -81,7 +81,7 @@
 			</section>
 
 			<section class="slide" data-module="Kickoff" data-title="Installation &amp; Setup" data-time="5 min">
-				<h2>Install &amp; Authenticate Gemini CLI</h2>
+				<h2>Install &amp; Authenticate Gemini CLI (Linux/macOS)</h2>
 				<p class="slide-label">Step 1 — Install</p>
 				<pre><code>npm install -g @google/gemini-cli</code></pre>
 				<p class="slide-label">Step 2 — Execute gemini</p>
@@ -536,7 +536,7 @@ cat gemini.md</code></pre>
 				<h2>Module C: Content Automation</h2>
 				<p class="section-note">แทนที่จะยิง prompt แบบ one-shot หลายครั้ง เราจะเปิด REPL ครั้งเดียว แล้วใช้ brief เดิมกับ follow-up prompts เพื่อปรับ content ต่อเนื่อง</p>
 				<p class="big">One brief → many channels</p>
-				<ul>
+					<li><strong>Product Specification</strong> — Product: AI workshop for junior team, Audience: team leads and new analysts</li>
 					<li><strong>One brief, 3 outputs</strong> — จาก brief เดียวต้องได้ social caption, email draft, และ landing hero copy โดยทั้ง 3 ชิ้นต้องสอดคล้องกัน และมีทั้งภาษาไทยกับอังกฤษ</li>
 					<li><strong>One REPL session, 3 moves</strong> — เริ่มจาก improved prompt, ตามด้วย revision prompt เพื่อ CTA ที่ชัดขึ้น, แล้วปิดท้ายด้วย self-check prompt ใน session เดิม</li>
 					<li><strong>Save v1 and v2 drafts</strong> — draft แรกที่ดีให้บันทึกเป็น <code>content-pack.md</code> และ draft ที่ revise แล้วให้บันทึกเป็น <code>content-pack-v2.md</code></li>
