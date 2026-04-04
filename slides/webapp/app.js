@@ -153,7 +153,7 @@ const labData = {
 			{ label: 'Step 4 (optional) — Save v2', code: 'Save html content to webapp-starter/public/index.html\n/quit' },
 			{ label: 'Step 4 — Run server and preview', code: 'cd webapp-starter && npm start' },
 			{ label: 'Step 5 (optional) — Start new REPL for v2', code: 'gemini' },
-			{ label: 'Step 5 (optional) — Paste refinement prompt', code: 'revise @landing-page-v2.html to have form that team can be apply and update to database where database is csv file' },
+			{ label: 'Step 5 (optional) — Paste refinement prompt', code: 'revise @landing-page-v2.html to have form that team can be apply and update to database where database is csv file. the form submission includes team name, number of members, contact email.' },
 			{ label: 'Step 5 (optional) — Save v3', code: 'Save html content to landing-page-v3.html' },
 			{ label: 'Step 5 (optional) — Save v2', code: 'Save html content to webapp-starter/public/index.html\n/quit' },
 			{ label: 'Step 5 — Run server and preview', code: 'cd webapp-starter && npm start' },
@@ -178,6 +178,7 @@ const labData = {
 		objective: 'Analyze the Lab D website output and propose prioritized improvements for copy quality and conversion outcomes.',
 		commands: [
 			{ label: 'Step 1 - Start new REPL for insights', code: 'gemini' },
+			{ label: 'Step 1 — Generate demo data', code: 'From @webapp-starter/submissions.csv create demo data for 20 records in @demodata.csv' },
 			{ label: 'Step 1 — Analyze data', code: 'Read @demodata.csv and analyze for report to CEO' },
 			{ label: 'Step 2 — Create visualization', code: 'Create a visualization dashboard' },
 			{ label: 'Step 2 - Quit REPL and run server to preview', code: '/quit && cd webapp-starter && npm start' },
