@@ -143,7 +143,7 @@ const labData = {
 			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
 			{ label: 'Step 1 — In REPL, paste this prompt', code: 'Using @content-pack-v2.md, generate a single-file landing page HTML with embedded CSS.\n Include: hero headline, subheadline, CTA button, one trust section, and one footer.\nKeep it responsive and preserve the bilingual tone. \nReturn HTML only.' },
 			{ label: 'Step 1 — Save output', code: 'Save html content to landing-page-v1.html' },
-			{ label: 'Step 2 — Publish page in starter app', code: 'Create a simple fullstack webapp-starter with an HTML form and a Node.js backend that saves submissions to a local CSV file.' },
+			{ label: 'Step 2 — Publish page in starter app', code: 'Create a simple fullstack in folder webapp-starter with an HTML form and a Node.js backend that saves submissions to a local CSV file.' },
 			{ label: 'Step 2 — Exit REPL', code: '/quit' },
 			{ label: 'Step 3 — Publish page in starter app', code: 'cp landing-page-v1.html webapp-starter/public/index.html' },
 			{ label: 'Step 3 — Run server and preview', code: 'cd webapp-starter && npm start' },
