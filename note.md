@@ -11,7 +11,8 @@ prompt 2
 Save html content to landing-page-v1.html
 
 prompt 3
-create simple webapp starter package for html and simple form submission to webapp-starter folder
+Create a simple fullstack webapp-starter with an HTML form and a Node.js
+  backend that saves submissions to a local CSV file.
 
 prompt 4
 Revise @landing-page-v1.html for better readability and stronger CTA hierarchy.
