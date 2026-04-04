@@ -57,7 +57,7 @@ const labData = {
 			{ label: 'Step 1 — Explore all commands', code: '/help' },
 			{ label: 'Step 2 — Optional bootstrap', code: '/init' },
 			{ label: 'Step 2 — Inspect generated repo guidance', code: 'cat gemini.md' },
-			{ label: 'Step 2 — After 2 prompts: review session', code: '/history' },
+			{ label: 'Step 2 — After 2 prompts: review session', code: '/rewind' },
 			{ label: 'Step 2 — Check token usage', code: '/stats' },
 			{ label: 'Step 3 — Compress history', code: '/compress' },
 			{ label: 'Step 3 — Compare token count after compress', code: '/stats' },
