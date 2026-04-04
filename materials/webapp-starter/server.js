@@ -2,12 +2,16 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const dotenv = require('dotenv');
+const { Pool } = require('pg');
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 const onsiteCsvPath = path.join(__dirname, 'onsite_applications.csv');
+const databaseUrl = String(process.env.DATABASE_URL || '').trim();
+
+let pgPool = null;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -42,6 +46,103 @@ async function appendOnsiteApplication(rowData) {
   }
 
   await fs.appendFile(onsiteCsvPath, row, 'utf8');
+}
+
+function shouldUseSslForPg() {
+  // Railway Postgres typically requires SSL in production deployments.
+  return process.env.NODE_ENV === 'production' || /railway\.app/i.test(databaseUrl);
+}
+
+function getPgPool() {
+  if (!databaseUrl) return null;
+  if (pgPool) return pgPool;
+
+  pgPool = new Pool({
+    connectionString: databaseUrl,
+    ssl: shouldUseSslForPg() ? { rejectUnauthorized: false } : false
+  });
+
+  return pgPool;
+}
+
+async function initPostgres() {
+  const pool = getPgPool();
+  if (!pool) return false;
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS onsite_applications (
+      id BIGSERIAL PRIMARY KEY,
+      submission_timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      applicant_name TEXT NOT NULL,
+      organization_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone_optional TEXT
+    )
+  `);
+
+  return true;
+}
+
+async function saveOnsiteApplication(rowData) {
+  const pool = getPgPool();
+
+  if (pool) {
+    await pool.query(
+      `
+        INSERT INTO onsite_applications
+          (submission_timestamp, applicant_name, organization_name, email, phone_optional)
+        VALUES ($1, $2, $3, $4, $5)
+      `,
+      [
+        rowData.submission_timestamp,
+        rowData.applicant_name,
+        rowData.organization_name,
+        rowData.email,
+        rowData.phone_optional
+      ]
+    );
+    return 'postgres';
+  }
+
+  await appendOnsiteApplication(rowData);
+  return 'csv';
+}
+
+async function getRecentOnsiteApplications(limit) {
+  const safeLimit = Math.min(Math.max(Number(limit) || 20, 1), 100);
+  const pool = getPgPool();
+
+  if (pool) {
+    const result = await pool.query(
+      `
+        SELECT submission_timestamp, applicant_name, organization_name, email, phone_optional
+        FROM onsite_applications
+        ORDER BY submission_timestamp DESC
+        LIMIT $1
+      `,
+      [safeLimit]
+    );
+    return { storage: 'postgres', rows: result.rows };
+  }
+
+  const raw = await fs.readFile(onsiteCsvPath, 'utf8').catch((error) => {
+    if (error.code === 'ENOENT') return 'submission_timestamp,applicant_name,organization_name,email,phone_optional\n';
+    throw error;
+  });
+
+  const lines = raw.trim().split('\n').slice(1).filter(Boolean);
+  const rows = lines.slice(-safeLimit).reverse().map((line) => {
+    const values = line.split(',').map((v) => v.replace(/^"|"$/g, '').replace(/""/g, '"'));
+    return {
+      submission_timestamp: values[0] || '',
+      applicant_name: values[1] || '',
+      organization_name: values[2] || '',
+      email: values[3] || '',
+      phone_optional: values[4] || ''
+    };
+  });
+
+  return { storage: 'csv', rows };
 }
 
 function buildMockAiResponse(input) {
@@ -181,7 +282,11 @@ app.post('/api/generate', async (req, res) => {
 });
 
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, service: 'gemini-workshop-webapp-starter' });
+  res.json({
+    ok: true,
+    service: 'gemini-workshop-webapp-starter',
+    storage: getPgPool() ? 'postgres' : 'csv'
+  });
 });
 
 app.post('/api/onsite-register', async (req, res) => {
@@ -203,7 +308,7 @@ app.post('/api/onsite-register', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Valid email is required' });
     }
 
-    await appendOnsiteApplication({
+    const storage = await saveOnsiteApplication({
       submission_timestamp: new Date().toISOString(),
       applicant_name,
       organization_name,
@@ -211,12 +316,37 @@ app.post('/api/onsite-register', async (req, res) => {
       phone_optional
     });
 
-    return res.status(201).json({ ok: true, message: 'Application submitted successfully' });
+    return res.status(201).json({ ok: true, message: 'Application submitted successfully', storage });
   } catch (error) {
     return res.status(500).json({ ok: false, error: 'Unable to save application', details: error.message });
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.get('/api/onsite-register', async (req, res) => {
+  try {
+    const { rows, storage } = await getRecentOnsiteApplications(req.query.limit);
+    return res.json({ ok: true, storage, count: rows.length, rows });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: 'Unable to read applications', details: error.message });
+  }
 });
+
+async function startServer() {
+  try {
+    if (databaseUrl) {
+      await initPostgres();
+      console.log('Postgres connected. Using DATABASE_URL storage.');
+    } else {
+      console.log('DATABASE_URL not set. Using CSV storage fallback.');
+    }
+
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('Failed to initialize storage:', error.message);
+    process.exit(1);
+  }
+}
+
+startServer();
