@@ -139,7 +139,7 @@ const labData = {
 		title: 'Lab D: Gemini CLI Website Build',
 		objective: 'Generate website HTML from Lab C hero using Gemini CLI in REPL, run it locally, and optionally create one improved v2 revision.',
 		commands: [
-			{ label: 'Step 0 — Confirm Lab C file exists', code: 'ls deliverables/TEAM_ALPHA/content-pack.md deliverables/TEAM_ALPHA/content-pack-v2.md' },
+			{ label: 'Step 0 — Confirm Lab C file exists', code: 'ls content-pack.md content-pack-v2.md' },
 			{ label: 'Step 1 — Enter REPL', code: 'gemini' },
 			{ label: 'Step 1 — In REPL, paste this prompt', code: 'Using @content-pack-v2.md, generate a single-file landing page HTML with embedded CSS.\n Include: hero headline, subheadline, CTA button, one trust section, and one footer.\nKeep it responsive and preserve the bilingual tone. \nReturn HTML only.' },
 			{ label: 'Step 1 — Save output', code: 'Save html content to landing-page-v1.html' },
