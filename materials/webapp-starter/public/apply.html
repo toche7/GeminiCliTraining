@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onsite Course Application</title>
+    <style>
+      :root {
+        --bg: #f3f8f3;
+        --panel: #ffffff;
+        --text: #1f2e1f;
+        --muted: #5d715d;
+        --line: #d2e2d2;
+        --accent: #166d45;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 0%, #e9f7e9, transparent 35%),
+          radial-gradient(circle at 90% 100%, #e1f1e4, transparent 35%),
+          var(--bg);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: min(760px, 100%);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 16px 32px rgba(23, 52, 26, 0.1);
+        padding: clamp(20px, 4vw, 36px);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+      }
+
+      .note {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .policy {
+        font-size: 0.92rem;
+        color: var(--muted);
+        background: #f4fbf5;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin-bottom: 18px;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 1rem;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(22, 109, 69, 0.15);
+      }
+
+      button {
+        margin-top: 4px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #fff;
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:hover { background: #124f33; border-color: #124f33; }
+      button:disabled { opacity: 0.65; cursor: not-allowed; }
+
+      .status {
+        min-height: 1.4em;
+        font-weight: 600;
+      }
+
+      .status.ok { color: #166d45; }
+      .status.err { color: #a13838; }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 14px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Onsite Course Application</h1>
+      <p class="note">กรอกข้อมูลเพื่อสมัครเรียนรอบ Onsite ถัดไป (Thai-first with English support)</p>
+      <p class="policy">Data policy: เก็บเฉพาะ applicant_name, organization_name, email, phone_optional, submission_timestamp และไม่เก็บ module_completed / participant_count</p>
+
+      <form id="applyForm" novalidate>
+        <label>
+          ชื่อผู้สมัคร (Applicant Name)
+          <input type="text" name="applicant_name" required maxlength="100" />
+        </label>
+
+        <label>
+          องค์กร/ทีม (Organization)
+          <input type="text" name="organization_name" required maxlength="120" />
+        </label>
+
+        <label>
+          อีเมลติดต่อ (Email)
+          <input type="email" name="email" required maxlength="160" />
+        </label>
+
+        <label>
+          เบอร์ติดต่อ (Phone, optional)
+          <input type="text" name="phone_optional" maxlength="40" />
+        </label>
+
+        <button id="submitBtn" type="submit">Submit Application</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <a class="back-link" href="/workshop/index.html">Back to workshop page</a>
+    </main>
+
+    <script>
+      const form = document.getElementById('applyForm');
+      const statusEl = document.getElementById('status');
+      const submitBtn = document.getElementById('submitBtn');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        statusEl.textContent = '';
+        statusEl.className = 'status';
+
+        const formData = new FormData(form);
+        const payload = {
+          applicant_name: String(formData.get('applicant_name') || '').trim(),
+          organization_name: String(formData.get('organization_name') || '').trim(),
+          email: String(formData.get('email') || '').trim(),
+          phone_optional: String(formData.get('phone_optional') || '').trim()
+        };
+
+        if (!payload.applicant_name || !payload.organization_name || !payload.email) {
+          statusEl.textContent = 'Please fill all required fields.';
+          statusEl.classList.add('err');
+          return;
+        }
+
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch('/api/onsite-register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.error || 'Submission failed');
+          }
+
+          statusEl.textContent = 'สมัครสำเร็จแล้ว / Application submitted successfully.';
+          statusEl.classList.add('ok');
+          form.reset();
+        } catch (error) {
+          statusEl.textContent = `Submit failed: ${error.message}`;
+          statusEl.classList.add('err');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

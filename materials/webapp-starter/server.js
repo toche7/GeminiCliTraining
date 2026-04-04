@@ -7,11 +7,42 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const onsiteCsvPath = path.join(__dirname, 'onsite_applications.csv');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const projectRoot = path.resolve(__dirname, '..', '..');
+app.use('/workshop', express.static(path.join(projectRoot, 'slides', 'webapp')));
+
+function escapeCsvValue(value) {
+  const str = String(value ?? '').replace(/\r?\n|\r/g, ' ').trim();
+  const escaped = str.replace(/"/g, '""');
+  return `"${escaped}"`;
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+}
+
+async function appendOnsiteApplication(rowData) {
+  const header = 'submission_timestamp,applicant_name,organization_name,email,phone_optional\n';
+  const row = [
+    rowData.submission_timestamp,
+    rowData.applicant_name,
+    rowData.organization_name,
+    rowData.email,
+    rowData.phone_optional
+  ].map(escapeCsvValue).join(',') + '\n';
+
+  try {
+    await fs.access(onsiteCsvPath);
+  } catch {
+    await fs.writeFile(onsiteCsvPath, header, 'utf8');
+  }
+
+  await fs.appendFile(onsiteCsvPath, row, 'utf8');
+}
 
 function buildMockAiResponse(input) {
   const text = String(input || '').trim();
@@ -151,6 +182,39 @@ app.post('/api/generate', async (req, res) => {
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'gemini-workshop-webapp-starter' });
+});
+
+app.post('/api/onsite-register', async (req, res) => {
+  try {
+    const applicant_name = String(req.body?.applicant_name || '').trim();
+    const organization_name = String(req.body?.organization_name || '').trim();
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    const phone_optional = String(req.body?.phone_optional || '').trim();
+
+    if (!applicant_name) {
+      return res.status(400).json({ ok: false, error: 'applicant_name is required' });
+    }
+
+    if (!organization_name) {
+      return res.status(400).json({ ok: false, error: 'organization_name is required' });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ ok: false, error: 'Valid email is required' });
+    }
+
+    await appendOnsiteApplication({
+      submission_timestamp: new Date().toISOString(),
+      applicant_name,
+      organization_name,
+      email,
+      phone_optional
+    });
+
+    return res.status(201).json({ ok: true, message: 'Application submitted successfully' });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: 'Unable to save application', details: error.message });
+  }
 });
 
 app.listen(port, () => {
