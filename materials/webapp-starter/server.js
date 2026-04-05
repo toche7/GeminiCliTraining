@@ -24,6 +24,7 @@ app.get('/', (_req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/workshop', express.static(path.join(projectRoot, 'slides', 'webapp')));
+app.use('/slides/webapp', express.static(path.join(projectRoot, 'slides', 'webapp')));
 
 function escapeCsvValue(value) {
   const str = String(value ?? '').replace(/\r?\n|\r/g, ' ').trim();
