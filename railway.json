@@ -4,7 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "node materials/webapp-starter/server.js",
     "healthcheckPath": "/health"
   }
 }
