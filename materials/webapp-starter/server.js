@@ -14,9 +14,15 @@ const databaseUrl = String(process.env.DATABASE_URL || '').trim();
 let pgPool = null;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
 const projectRoot = path.resolve(__dirname, '..', '..');
+
+// Serve repo root index.html as the landing page
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(projectRoot, 'index.html'));
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/workshop', express.static(path.join(projectRoot, 'slides', 'webapp')));
 
 function escapeCsvValue(value) {
